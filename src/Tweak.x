@@ -647,14 +647,20 @@ BOOL showSearchSectionLabelForTag(NSInteger tag) {
             if ([obj isKindOfClass:%c(IGLabelItemViewModel)]) {
 
                 // "Suggested for you" search results header
-                if ([[obj valueForKey:@"labelTitle"] isEqualToString:@"Suggested for you"]) {
+                NSString *labelTitle = [obj valueForKey:@"labelTitle"];
+                if ([labelTitle isEqualToString:@"Suggested for you"]
+                    || [labelTitle isEqualToString:@"More suggestions"]
+                    || [labelTitle isEqualToString:@"Suggested"]
+                    || [labelTitle isEqualToString:@"People you might know"]
+                    || [labelTitle isEqualToString:@"Contacts"]) {
                     shouldHide = YES;
                 }
 
             }
 
             // Instagram users
-            else if ([obj isKindOfClass:%c(IGDiscoverPeopleItemConfiguration)]) {
+            else if ([obj isKindOfClass:%c(IGDiscoverPeopleItemConfiguration)]
+                     || [obj isKindOfClass:%c(IGSearchSuggestedUserChainingModel)]) {
                 shouldHide = YES;
             }
 

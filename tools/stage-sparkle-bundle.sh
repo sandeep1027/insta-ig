@@ -6,6 +6,59 @@ ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 DESTINATION="${1:?usage: stage-sparkle-bundle.sh <destination> [--localizations-only|--augment-ffmpeg|--frameworks-only]}"
 MODE="${2:-}"
 
+# Theos's Linux iOS toolchain provides otool/install_name_tool/ldid.
+if ! command -v otool >/dev/null 2>&1 || ! command -v install_name_tool >/dev/null 2>&1; then
+    THEOS_BIN="${THEOS:-$HOME/theos}/toolchain/linux/iphone/bin"
+    if [ -d "$THEOS_BIN" ]; then
+        export PATH="$THEOS_BIN:$PATH"
+    fi
+fi
+
+plistbuddy() {
+    if [ -x /usr/libexec/PlistBuddy ]; then
+        /usr/libexec/PlistBuddy "$@"
+    else
+        python3 "$ROOT_DIR/tools/plistbuddy.py" "$@"
+    fi
+}
+
+sparkle_codesign_sign() {
+    local binary="$1"
+    local identifier="${2:-}"
+    if command -v codesign >/dev/null 2>&1; then
+        if [ -n "$identifier" ]; then
+            codesign --force --sign - --timestamp=none --identifier "$identifier" "$binary"
+        else
+            codesign --force --sign - --timestamp=none "$binary"
+        fi
+        return
+    fi
+    if [ -n "$identifier" ]; then
+        ldid -S -I"$identifier" "$binary"
+    else
+        ldid -S "$binary"
+    fi
+}
+
+sparkle_codesign_verify() {
+    local binary="$1"
+    shift
+    if command -v codesign >/dev/null 2>&1; then
+        codesign --verify --strict --all-architectures "$@" "$binary"
+        return
+    fi
+    ldid -h "$binary" >/dev/null
+}
+
+sparkle_codesign_remove() {
+    local binary="$1"
+    if command -v codesign >/dev/null 2>&1; then
+        codesign --remove-signature "$binary"
+        return
+    fi
+    ldid -r "$binary"
+}
+
 # FFmpeg ships its libraries under names Instagram also uses for its own
 # vendored copies (libavutil, libavcodec). Anything installed into the app's
 # Frameworks directory would replace those and break Instagram's strong links,
@@ -79,9 +132,9 @@ stage_ffmpeg_frameworks() {
         # Signers locate a framework's code through CFBundleExecutable, and
         # Cyan derives the binary name from the directory name, so both have to
         # follow the rename.
-        /usr/libexec/PlistBuddy -c "Set :CFBundleExecutable $renamed" "$destination_framework/Info.plist"
-        /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier $identifier" "$destination_framework/Info.plist"
-        /usr/libexec/PlistBuddy -c "Set :CFBundleName $renamed" "$destination_framework/Info.plist"
+        plistbuddy -c "Set :CFBundleExecutable $renamed" "$destination_framework/Info.plist"
+        plistbuddy -c "Set :CFBundleIdentifier $identifier" "$destination_framework/Info.plist"
+        plistbuddy -c "Set :CFBundleName $renamed" "$destination_framework/Info.plist"
 
         install_name_tool -id "@loader_path/../${renamed}.framework/${renamed}" "$destination_binary"
         targets+=("$destination_binary")
@@ -116,17 +169,17 @@ stage_ffmpeg_frameworks() {
             for binary in "${targets[@]}"; do
                 signing_binary="$signing_directory/$(basename "$binary")"
                 cp "$binary" "$signing_binary"
-                codesign --force --sign - --timestamp=none \
-                    --identifier "com.sparkle.ffmpeg.$(basename "$binary" | sed 's/^spk\.//')" "$signing_binary"
+                sparkle_codesign_sign "$signing_binary" \
+                    "com.sparkle.ffmpeg.$(basename "$binary" | sed 's/^spk\.//')"
                 cp "$signing_binary" "$binary"
-                codesign --verify --strict --all-architectures --ignore-resources "$binary"
+                sparkle_codesign_verify "$binary" --ignore-resources
             done
             rm -rf "$signing_directory"
             ;;
         sealed)
             for binary in "${targets[@]}"; do
-                codesign --force --sign - --timestamp=none "$binary"
-                codesign --verify --strict --all-architectures "$binary"
+                sparkle_codesign_sign "$binary"
+                sparkle_codesign_verify "$binary"
             done
             ;;
         none)
@@ -135,7 +188,7 @@ stage_ffmpeg_frameworks() {
             # rejected outright once the app is signed with a real certificate.
             for binary in "${targets[@]}"; do
                 if otool -l "$binary" | grep -q LC_CODE_SIGNATURE; then
-                    codesign --remove-signature "$binary"
+                    sparkle_codesign_remove "$binary"
                 fi
             done
             ;;

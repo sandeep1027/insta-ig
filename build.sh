@@ -10,6 +10,15 @@ ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
 # Sparkle version, read from the control file (single source of truth).
 SPARKLE_VERSION="$(awk '/^Version:/ {print $2; exit}' "$ROOT_DIR/control")"
 
+# macOS ships PlistBuddy; Linux-hosted IPA packaging uses tools/plistbuddy.py.
+plistbuddy() {
+    if [ -x /usr/libexec/PlistBuddy ]; then
+        /usr/libexec/PlistBuddy "$@"
+    else
+        python3 "$ROOT_DIR/tools/plistbuddy.py" "$@"
+    fi
+}
+
 FFMPEG_MODULES_DIR="$ROOT_DIR/modules/ffmpegkit"
 FFMPEG_FRAMEWORKS=(
     "$FFMPEG_MODULES_DIR/ffmpegkit.framework"
@@ -63,7 +72,11 @@ ensure_flexing_submodule() {
 build_flex_library() {
     echo -e '\033[1m\033[32mBuilding libFLEX.dylib...\033[0m'
     make -C "$ROOT_DIR/modules/FLEXing/libflex" clean
-    make -C "$ROOT_DIR/modules/FLEXing/libflex" DEBUG=0 FINALPACKAGE=1
+    # Linux Theos has no arm64e runtime; keep the slice Sparkle ships.
+    make -C "$ROOT_DIR/modules/FLEXing/libflex" \
+        DEBUG=0 FINALPACKAGE=1 \
+        ARCHS=arm64 \
+        TARGET=iphone:clang:16.2:15.0
 }
 
 build_sideload_fix_library() {
@@ -156,7 +169,11 @@ copy_flex_library_into_ipa() {
     fi
 
     mkdir -p "$app_dir/Frameworks"
-    ditto "$libflex_path" "$app_dir/Frameworks/libFLEX.dylib"
+    if command -v ditto >/dev/null 2>&1; then
+        ditto "$libflex_path" "$app_dir/Frameworks/libFLEX.dylib"
+    else
+        cp -a "$libflex_path" "$app_dir/Frameworks/libFLEX.dylib"
+    fi
 
     rm -f "$output_ipa"
     (
@@ -241,18 +258,17 @@ sparkle_private_url_scheme() {
 register_private_url_scheme() {
     local plist="$1/Info.plist"
     local scheme="$2"
-    local buddy=/usr/libexec/PlistBuddy
 
-    if "$buddy" -c "Print :CFBundleURLTypes" "$plist" 2>/dev/null | grep -qx "[[:space:]]*${scheme}"; then
+    if plistbuddy -c "Print :CFBundleURLTypes" "$plist" 2>/dev/null | grep -qx "[[:space:]]*${scheme}"; then
         return 0
     fi
-    if ! "$buddy" -c "Print :CFBundleURLTypes:0:CFBundleURLSchemes" "$plist" >/dev/null 2>&1; then
-        "$buddy" -c "Add :CFBundleURLTypes array" "$plist" 2>/dev/null || true
-        "$buddy" -c "Add :CFBundleURLTypes:0 dict" "$plist"
-        "$buddy" -c "Add :CFBundleURLTypes:0:CFBundleTypeRole string Editor" "$plist"
-        "$buddy" -c "Add :CFBundleURLTypes:0:CFBundleURLSchemes array" "$plist"
+    if ! plistbuddy -c "Print :CFBundleURLTypes:0:CFBundleURLSchemes" "$plist" >/dev/null 2>&1; then
+        plistbuddy -c "Add :CFBundleURLTypes array" "$plist" 2>/dev/null || true
+        plistbuddy -c "Add :CFBundleURLTypes:0 dict" "$plist"
+        plistbuddy -c "Add :CFBundleURLTypes:0:CFBundleTypeRole string Editor" "$plist"
+        plistbuddy -c "Add :CFBundleURLTypes:0:CFBundleURLSchemes array" "$plist"
     fi
-    "$buddy" -c "Add :CFBundleURLTypes:0:CFBundleURLSchemes: string ${scheme}" "$plist"
+    plistbuddy -c "Add :CFBundleURLTypes:0:CFBundleURLSchemes: string ${scheme}" "$plist"
 }
 
 # Args: appex dir. Compiles the Safari extension's native half into it. The
@@ -271,7 +287,7 @@ build_safari_extension_handler() {
         return 1
     fi
 
-    executable="$(/usr/libexec/PlistBuddy -c "Print :CFBundleExecutable" "$appex_dir/Info.plist")" || return 1
+    executable="$(plistbuddy -c "Print :CFBundleExecutable" "$appex_dir/Info.plist")" || return 1
     # NSExtensionMain is the entry point of every app extension; there is no main().
     # Built and signed outside the bundle: signing it in place would seal the
     # whole extension before its scripts are final.
@@ -400,7 +416,7 @@ ig_app_version() {
     if unzip -o -q "$ipa" "Payload/*.app/Info.plist" -d "$tmp" >/dev/null 2>&1; then
         plist="$(find "$tmp/Payload" -maxdepth 2 -name Info.plist 2>/dev/null | head -n 1)"
         if [ -n "$plist" ]; then
-            version="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$plist" 2>/dev/null)"
+            version="$(plistbuddy -c 'Print :CFBundleShortVersionString' "$plist" 2>/dev/null)"
         fi
     fi
     rm -rf "$tmp"

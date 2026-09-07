@@ -11,7 +11,13 @@ include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = Sparkle
 
+# Linux Theos cannot compile the UIKit/VisionKit Swift bridge, and its clang
+# does not link compiler-rt's @available helper.
+ifeq ($(THEOS_PLATFORM_NAME),linux)
+$(TWEAK_NAME)_FILES = $(shell find src -type f \( -iname \*.x -o -iname \*.xm -o -iname \*.m \)) modules/SPKSideloadFix/fishhook/fishhook.c support/os_version_check.c
+else
 $(TWEAK_NAME)_FILES = $(shell find src -type f \( -iname \*.x -o -iname \*.xm -o -iname \*.m -o -iname \*.swift \)) modules/SPKSideloadFix/fishhook/fishhook.c
+endif
 $(TWEAK_NAME)_FRAMEWORKS = UIKit Foundation CoreGraphics CoreLocation MapKit Photos CoreServices SystemConfiguration SafariServices Security QuartzCore AVFoundation AVKit CoreData LocalAuthentication ImageIO UniformTypeIdentifiers Accelerate VisionKit UserNotifications WebKit
 $(TWEAK_NAME)_PRIVATE_FRAMEWORKS = Preferences
 $(TWEAK_NAME)_LIBRARIES = sqlite3

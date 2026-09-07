@@ -9,6 +9,7 @@
 #import "../../Shared/MediaPreview/SPKFullScreenImageViewController.h"
 #import "../../Shared/UI/SPKIGAlertPresenter.h"
 #import "../../Utils.h"
+#import "../SPKShareBlocklistViewController.h"
 #import "../SPKActionSectionIconPickerViewController.h"
 #import "../SPKAppIconCatalog.h"
 #import "../SPKAppIconPickerViewController.h"
@@ -189,6 +190,16 @@ static SPKSetting *SPKTappableTextLinksSetting(void) {
                                                           icon:SPKSettingsIcon(@"pin")
                                                    defaultsKey:@"general_share_sheet_pins"],
                                SPKL(@"GENERAL_SHARING_PIN_RECIPIENTS_HELP")),
+            SPKSettingWithHelp([SPKSetting switchCellWithTitle:SPKL(@"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_TITLE")
+                                                          icon:SPKSettingsIcon(@"user_unfollow")
+                                                   defaultsKey:@"general_hide_share_recipients"
+                                               requiresRestart:YES],
+                               SPKL(@"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_HELP")),
+            SPKSettingWithHelp([SPKSetting navigationCellWithTitle:SPKL(@"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_TITLE")
+                                                          subtitle:@""
+                                                              icon:SPKSettingsIcon(@"users")
+                                                    viewController:[SPKShareBlocklistViewController new]],
+                               SPKL(@"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_HELP")),
         ],
                         nil),
         SPKTopicSection(SPKL(@"GENERAL_RECOMMENDATIONS_HEADER"), @[

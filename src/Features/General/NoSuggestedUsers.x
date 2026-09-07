@@ -23,6 +23,10 @@ static inline BOOL SPKHideSubscriptionSuggestedUsers(void) {
     return [SPKUtils getBoolPref:@"general_hide_suggested_users_subscriptions"];
 }
 
+static inline BOOL SPKHideSearchSuggestedUsers(void) {
+    return [SPKUtils getBoolPref:@"general_hide_suggested_users_search"];
+}
+
 %group SPKNoSuggestedUsersHooks
 
 // "Welcome to instagram" suggested users in feed
@@ -246,6 +250,61 @@ static inline BOOL SPKHideSubscriptionSuggestedUsers(void) {
 }
 %end
 
+%hook IGProfileActionBarViewModel
+- (id)initWithIdentifier:(id)arg1
+                       rows:(id)arg2
+        allActionsToDisplay:(id)arg3
+            overflowActions:(id)arg4
+       actionToBadgeInfoMap:(id)arg5
+         allBusinessActions:(id)arg6
+    overflowBusinessActions:(id)arg7
+        contactSheetActions:(id)arg8
+                       user:(id)arg9
+      sponsoredInfoProvider:(id)arg10
+     profileBackgroundColor:(id)arg11 {
+    NSArray *rows = arg2;
+    NSOrderedSet *allActions = [arg3 copy];
+    NSOrderedSet *overflowActions = [arg4 copy];
+
+    if (SPKHideProfileSuggestedUsers()) {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"NOT (SELF IN %@)", @[ @(3) ]];
+
+        // Actions sets
+        allActions = [allActions filteredOrderedSetUsingPredicate:predicate];
+        overflowActions = [overflowActions filteredOrderedSetUsingPredicate:predicate];
+
+        // Rows of actions sets
+        NSMutableArray *filteredRows = [NSMutableArray new];
+        for (NSOrderedSet *set in rows) {
+            [filteredRows addObject:[set filteredOrderedSetUsingPredicate:predicate]];
+        }
+        rows = [filteredRows copy];
+    }
+
+    return %orig(arg1, rows, allActions, overflowActions, arg5, arg6, arg7, arg8, arg9, arg10, arg11);
+}
+%end
+
+%hook IGSuggestedUsersSearchListAdapterDataSource
+- (id)objectsForListAdapter:(id)arg1 {
+    if (SPKHideSearchSuggestedUsers()) {
+        SPKLog(@"General", @"[Sparkle] Hiding suggested users: suggested users search data source");
+        return @[];
+    }
+    return %orig;
+}
+%end
+
+%hook IGDiscoverPeopleSearchListAdapterDataSource
+- (id)objectsForListAdapter:(id)arg1 {
+    if (SPKHideSearchSuggestedUsers()) {
+        SPKLog(@"General", @"[Sparkle] Hiding suggested users: discover people search data source");
+        return @[];
+    }
+    return %orig;
+}
+%end
+
 %end
 
 void SPKInstallNoSuggestedUsersHooksIfEnabled(void) {
@@ -253,7 +312,8 @@ void SPKInstallNoSuggestedUsersHooksIfEnabled(void) {
         !SPKHideProfileSuggestedUsers() &&
         !SPKHideActivitySuggestedUsers() &&
         !SPKHideFollowListSuggestedUsers() &&
-        !SPKHideSubscriptionSuggestedUsers()) {
+        !SPKHideSubscriptionSuggestedUsers() &&
+        !SPKHideSearchSuggestedUsers()) {
         return;
     }
 

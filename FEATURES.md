@@ -37,6 +37,8 @@ marked **(restart)** and prompt for a relaunch when changed.
 - **Confirm Create Group**: Confirmation alert before creating a group on Instagram send/share sheet.
 - **Confirm Send**: Confirmation alert before sending a post.
 - **Pin Recipients in Share Sheet**: Hold a person's photo or name in the share sheet to pin them to the top of the recipient list; hold again to unpin. Holding a group still opens Instagram's member preview, now with a **Pin to Top** / **Unpin** button under the members. Pinned recipients carry a small pin on their photo, hidden from screenshots and recordings when Hide UI on Capture is on, newest pin first. Pins are per account and only reorder recipients Instagram already lists in the sheet.
+- **Hide Share Recipients** *(restart)*: Hides usernames you choose from the share sheet, quick-send bubbles, and DM recipient lists. Long-press a suggested recipient bubble to hide or unhide them.
+- **Manage Hidden Recipients**: Add or remove usernames on the share-recipient blocklist.
 
 ### Media Preview & Menu
 - **Show Media Info**: Overlays the author and post date (including time for live previews) over the expanded photo preview. Tap the media to hide it together with the controls. (Photos only — video previews are left untouched so the scrubber and controls stay clear.)
