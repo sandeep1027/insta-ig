@@ -1,5 +1,6 @@
 #import "../../InstagramHeaders.h"
 #import "../../Utils.h"
+#import "../../Shared/Messages/SPKDirectHiddenChats.h"
 #import "../../Shared/Messages/SPKShareBlocklistManager.h"
 #import "SPKStrings.h"
 
@@ -7,6 +8,25 @@
 
 static const void *kSPKSupershareBlockedKey = &kSPKSupershareBlockedKey;
 static const void *kSPKSupershareUsernameKey = &kSPKSupershareUsernameKey;
+
+/// Returns YES when `username` should be suppressed on share surfaces.
+/// Checks the explicit share-recipient blocklist first, then falls through to the
+/// hidden-chats list so any user in a hidden 1:1 chat disappears from the share
+/// sheet, quick-send strip, and supershard row without a separate blocklist entry.
+static BOOL SPKShouldHideShareRecipientWithUsername(NSString *username) {
+    if (!username.length)
+        return NO;
+    if ([[SPKShareBlocklistManager shared] isUsernameBlocked:username])
+        return YES;
+        
+    BOOL hiddenChatsShareSheetEnabled = SPKDirectHiddenChatsEnabled() && [SPKUtils getBoolPref:@"msgs_hidden_chats_hide_in_share_sheet"];
+    return hiddenChatsShareSheetEnabled && SPKDirectHiddenChatListContainsUsername(username);
+}
+
+static BOOL SPKHideShareRecipientsAnyFeatureEnabled(void) {
+    BOOL hiddenChatsShareSheetEnabled = SPKDirectHiddenChatsEnabled() && [SPKUtils getBoolPref:@"msgs_hidden_chats_hide_in_share_sheet"];
+    return [SPKUtils getBoolPref:@"general_hide_share_recipients"] || hiddenChatsShareSheetEnabled;
+}
 
 static NSString *SPKUsernameFromShareObject(id obj) {
     if (!obj)
@@ -73,7 +93,7 @@ static NSString *SPKUsernameFromSupershareCell(id cell) {
 %hook IGDirectRecipientListViewController
 - (id)objectsForListAdapter:(id)arg1 {
     NSArray *originalObjs = %orig();
-    if (![SPKUtils getBoolPref:@"general_hide_share_recipients"])
+    if (!SPKHideShareRecipientsAnyFeatureEnabled())
         return originalObjs;
 
     NSMutableArray *filteredObjs = [NSMutableArray arrayWithCapacity:originalObjs.count];
@@ -84,8 +104,8 @@ static NSString *SPKUsernameFromSupershareCell(id cell) {
             NSString *username = SPKUsernameFromShareObject(obj);
             if (!username.length)
                 username = SPKUsernameFromShareObject(recipient);
-            if (username.length && [[SPKShareBlocklistManager shared] isUsernameBlocked:username]) {
-                SPKLog(@"General", @"[Sparkle] Hiding blocked share recipient: %@", username);
+            if (username.length && SPKShouldHideShareRecipientWithUsername(username)) {
+                SPKLog(@"General", @"[Sparkle] Hiding share recipient (blocklist/hidden chat): %@", username);
                 shouldHide = YES;
             }
         }
@@ -113,14 +133,14 @@ static NSString *SPKUsernameFromSupershareCell(id cell) {
     if (username)
         objc_setAssociatedObject(self, kSPKSupershareUsernameKey, username, OBJC_ASSOCIATION_COPY_NONATOMIC);
 
-    if (![SPKUtils getBoolPref:@"general_hide_share_recipients"]) {
+    if (!SPKHideShareRecipientsAnyFeatureEnabled()) {
         objc_setAssociatedObject(self, kSPKSupershareBlockedKey, @NO, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         return;
     }
 
-    BOOL blocked = username.length && [[SPKShareBlocklistManager shared] isUsernameBlocked:username];
+    BOOL blocked = username.length && SPKShouldHideShareRecipientWithUsername(username);
     if (blocked)
-        SPKLog(@"General", @"[Sparkle] Hiding blocked supershar recipient: %@", username);
+        SPKLog(@"General", @"[Sparkle] Hiding supershard recipient (blocklist/hidden chat): %@", username);
     objc_setAssociatedObject(self, kSPKSupershareBlockedKey, @(blocked), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
@@ -142,14 +162,14 @@ static NSString *SPKUsernameFromSupershareCell(id cell) {
 %hook IGDirectQuickSendListAdapterDataSource
 - (id)objectsForListAdapter:(id)arg1 {
     NSArray *orig = %orig;
-    if (![SPKUtils getBoolPref:@"general_hide_share_recipients"])
+    if (!SPKHideShareRecipientsAnyFeatureEnabled())
         return orig;
 
     NSMutableArray *filtered = [NSMutableArray arrayWithCapacity:orig.count];
     for (id obj in orig) {
         NSString *username = SPKUsernameFromShareObject(obj);
-        if (username.length && [[SPKShareBlocklistManager shared] isUsernameBlocked:username]) {
-            SPKLog(@"General", @"[Sparkle] Hiding blocked quick-send recipient: %@", username);
+        if (username.length && SPKShouldHideShareRecipientWithUsername(username)) {
+            SPKLog(@"General", @"[Sparkle] Hiding quick-send recipient (blocklist/hidden chat): %@", username);
             continue;
         }
         [filtered addObject:obj];
@@ -237,7 +257,11 @@ static NSString *SPKUsernameFromSupershareCell(id cell) {
 %end
 
 extern "C" void SPKInstallHideShareRecipientsHooksIfEnabled(void) {
-    if (![SPKUtils getBoolPref:@"general_hide_share_recipients"])
+    // Install when the explicit share-recipient blocklist is on, OR when the hidden-chats
+    // feature is on — both features now use the same hooks and the same helper function.
+    BOOL hiddenChatsShareSheetEnabled = SPKDirectHiddenChatsEnabled() && [SPKUtils getBoolPref:@"msgs_hidden_chats_hide_in_share_sheet"];
+    BOOL needsHooks = [SPKUtils getBoolPref:@"general_hide_share_recipients"] || hiddenChatsShareSheetEnabled;
+    if (!needsHooks)
         return;
 
     static dispatch_once_t onceToken;

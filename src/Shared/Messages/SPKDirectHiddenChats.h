@@ -40,6 +40,11 @@ BOOL SPKDirectHiddenChatListContainsContext(SPKDirectThreadContext *_Nullable co
 /// hidden partner does not itself go hidden.
 BOOL SPKDirectHiddenChatListContainsParticipants(NSArray<NSString *> *_Nullable userPKs, BOOL isGroup);
 
+/// YES when `username` belongs to a participant in any stored hidden 1:1 chat.
+/// Group chats are excluded so that hiding a group does not suppress every member
+/// across every share surface. Comparison is case-insensitive and strips leading @.
+BOOL SPKDirectHiddenChatListContainsUsername(NSString *_Nullable username);
+
 void SPKDirectHideThreadWithContext(SPKDirectThreadContext *context);
 void SPKDirectUnhideThreadId(NSString *threadId);
 

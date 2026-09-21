@@ -1767,6 +1767,8 @@
 "MESSAGES_HIDDEN_CHATS_HELP" = "Αφαιρεί από τη λίστα των εισερχομένων τις συνομιλίες που κρύβεις. Κράτα πατημένη μια συνομιλία για να την κρύψεις και κράτα πατημένο τον τίτλο των εισερχομένων για να επαναφέρεις τις κρυφές.";
 "MESSAGES_HIDDEN_CHATS_HIDDEN_FORMAT" = "Κρύφτηκε: %@";
 "MESSAGES_HIDDEN_CHATS_HIDDEN_SUBTITLE" = "Κράτα πατημένο τον τίτλο των εισερχομένων για εμφάνιση";
+"MESSAGES_HIDDEN_CHATS_INBOX_LONG_PRESS_HELP" = "Long-press a chat in the inbox to hide or unhide it. Turn this off to leave the chat long-press menu to Instagram.";
+"MESSAGES_HIDDEN_CHATS_INBOX_LONG_PRESS_TITLE" = "Inbox Long Press";
 "MESSAGES_HIDDEN_CHATS_LIST_EMPTY_SUBTITLE" = "Κράτα πατημένη μια συνομιλία στα εισερχόμενα και διάλεξε Απόκρυψη συνομιλίας.";
 "MESSAGES_HIDDEN_CHATS_LIST_EMPTY_TITLE" = "Δεν υπάρχουν ακόμη κρυφές συνομιλίες";
 "MESSAGES_HIDDEN_CHATS_LIST_HELP" = "Κάθε συνομιλία που έχετε κρύψει. Προσθέστε μία με το όνομα χρήστη ή σύρετε μια γραμμή για να την εμφανίσετε ξανά.";
@@ -1793,6 +1795,8 @@
 "MESSAGES_HIDDEN_CHATS_REVEALED_TITLE" = "Εμφάνιση κρυφών συνομιλιών";
 "MESSAGES_HIDDEN_CHATS_REVEAL_RESET_HELP" = "Πότε τελειώνει η εμφάνιση. Η Έξοδος από τα εισερχόμενα τις κρύβει ξανά μόλις φύγεις, η Εφαρμογή στο παρασκήνιο τις κρατά ορατές μέχρι το Instagram να πάει στο παρασκήνιο και το Χειροκίνητα τις κρατά ορατές μέχρι να κρατήσεις ξανά πατημένο τον τίτλο.";
 "MESSAGES_HIDDEN_CHATS_REVEAL_RESET_TITLE" = "Απόκρυψη ξανά";
+"MESSAGES_HIDDEN_CHATS_REVEAL_SHORTCUT_HELP" = "Long-press Messages at the top of the inbox to show or hide hidden chats. Turn this off to leave that heading to Instagram.";
+"MESSAGES_HIDDEN_CHATS_REVEAL_SHORTCUT_TITLE" = "Reveal Shortcut";
 "MESSAGES_HIDDEN_CHATS_SHARE_REVEAL_SUBTITLE" = "Μόνο σε αυτό το φύλλο κοινοποίησης";
 "MESSAGES_HIDDEN_CHATS_SHARE_SHEET_HELP" = "Κρατά τις κρυφές συνομιλίες εκτός των παραληπτών που προτείνει το Instagram όταν κοινοποιείς μια ανάρτηση ή ξεκινάς νέο μήνυμα. Η αναζήτηση τις βρίσκει ακόμη, και το παρατεταμένο πάτημα του κουμπιού ομάδας δίπλα στο πεδίο αναζήτησης τις εμφανίζει μόνο σε αυτό το φύλλο.";
 "MESSAGES_HIDDEN_CHATS_SHARE_SHEET_TITLE" = "Απόκρυψη από το φύλλο κοινοποίησης";

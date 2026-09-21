@@ -1767,6 +1767,8 @@
 "MESSAGES_HIDDEN_CHATS_HELP" = "आपकी छिपाई गई चैट को इनबॉक्स सूची से हटाता है। किसी चैट को देर तक दबाकर छिपाएँ, और छिपी चैट वापस लाने के लिए इनबॉक्स शीर्षक को देर तक दबाएँ।";
 "MESSAGES_HIDDEN_CHATS_HIDDEN_FORMAT" = "%@ छिपाई गई";
 "MESSAGES_HIDDEN_CHATS_HIDDEN_SUBTITLE" = "दिखाने के लिए इनबॉक्स शीर्षक दबाए रखें";
+"MESSAGES_HIDDEN_CHATS_INBOX_LONG_PRESS_HELP" = "Long-press a chat in the inbox to hide or unhide it. Turn this off to leave the chat long-press menu to Instagram.";
+"MESSAGES_HIDDEN_CHATS_INBOX_LONG_PRESS_TITLE" = "Inbox Long Press";
 "MESSAGES_HIDDEN_CHATS_LIST_EMPTY_SUBTITLE" = "अपने इनबॉक्स में किसी चैट को देर तक दबाएँ और चैट छिपाएँ चुनें।";
 "MESSAGES_HIDDEN_CHATS_LIST_EMPTY_TITLE" = "अभी कोई छिपी चैट नहीं";
 "MESSAGES_HIDDEN_CHATS_LIST_HELP" = "आपकी छिपाई हुई सभी चैट। उपयोगकर्ता नाम से एक जोड़ें, या किसी पंक्ति पर स्वाइप करके उसे फिर से दिखाएं।";
@@ -1793,6 +1795,8 @@
 "MESSAGES_HIDDEN_CHATS_REVEALED_TITLE" = "छिपी चैट दिखाई जा रही हैं";
 "MESSAGES_HIDDEN_CHATS_REVEAL_RESET_HELP" = "दिखाना कब खत्म होगा। इनबॉक्स छोड़ने पर आपके हटते ही उन्हें फिर छिपा देता है, ऐप बैकग्राउंड में जाने पर उन्हें तब तक दिखाता रहता है जब तक Instagram बैकग्राउंड में नहीं चला जाता, और मैन्युअल रूप से उन्हें तब तक दिखाता रहता है जब तक आप शीर्षक फिर से देर तक न दबाएँ।";
 "MESSAGES_HIDDEN_CHATS_REVEAL_RESET_TITLE" = "चैट फिर से छिपाएँ";
+"MESSAGES_HIDDEN_CHATS_REVEAL_SHORTCUT_HELP" = "Long-press Messages at the top of the inbox to show or hide hidden chats. Turn this off to leave that heading to Instagram.";
+"MESSAGES_HIDDEN_CHATS_REVEAL_SHORTCUT_TITLE" = "Reveal Shortcut";
 "MESSAGES_HIDDEN_CHATS_SHARE_REVEAL_SUBTITLE" = "केवल इस शेयर शीट में";
 "MESSAGES_HIDDEN_CHATS_SHARE_SHEET_HELP" = "छिपी हुई चैट को उन प्राप्तकर्ताओं से बाहर रखता है जो पोस्ट शेयर करते समय या नया संदेश शुरू करते समय इंस्टाग्राम सुझाता है. खोज उन्हें फिर भी ढूँढ लेती है, और खोज फ़ील्ड के बगल वाले ग्रुप बटन को दबाकर रखने पर वे सिर्फ़ उसी शीट में दिखती हैं.";
 "MESSAGES_HIDDEN_CHATS_SHARE_SHEET_TITLE" = "शेयर शीट से छिपाएँ";

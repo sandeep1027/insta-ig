@@ -1767,6 +1767,8 @@
 "MESSAGES_HIDDEN_CHATS_HELP" = "Retire de la liste de la boîte de réception les discussions que vous masquez. Appuyez longuement sur une discussion pour la masquer, et sur le titre de la boîte de réception pour ramener les discussions masquées.";
 "MESSAGES_HIDDEN_CHATS_HIDDEN_FORMAT" = "%@ masqué";
 "MESSAGES_HIDDEN_CHATS_HIDDEN_SUBTITLE" = "Maintenez le titre de la boîte de réception pour afficher";
+"MESSAGES_HIDDEN_CHATS_INBOX_LONG_PRESS_HELP" = "Long-press a chat in the inbox to hide or unhide it. Turn this off to leave the chat long-press menu to Instagram.";
+"MESSAGES_HIDDEN_CHATS_INBOX_LONG_PRESS_TITLE" = "Inbox Long Press";
 "MESSAGES_HIDDEN_CHATS_LIST_EMPTY_SUBTITLE" = "Appuyez longuement sur une discussion de votre boîte de réception et choisissez Masquer la discussion.";
 "MESSAGES_HIDDEN_CHATS_LIST_EMPTY_TITLE" = "Aucune discussion masquée pour l'instant";
 "MESSAGES_HIDDEN_CHATS_LIST_HELP" = "Toutes les discussions que vous avez masquées. Ajoutez-en une par nom d'utilisateur, ou balayez une ligne pour la réafficher.";
@@ -1793,6 +1795,8 @@
 "MESSAGES_HIDDEN_CHATS_REVEALED_TITLE" = "Discussions masquées affichées";
 "MESSAGES_HIDDEN_CHATS_REVEAL_RESET_HELP" = "Quand un affichage prend fin. Sortie de la boîte de réception masque de nouveau dès que vous quittez l'écran, Application en arrière-plan les garde visibles jusqu'à ce qu'Instagram passe en arrière-plan, et Manuellement les garde visibles jusqu'à ce que vous mainteniez de nouveau le titre.";
 "MESSAGES_HIDDEN_CHATS_REVEAL_RESET_TITLE" = "Remasquer les discussions";
+"MESSAGES_HIDDEN_CHATS_REVEAL_SHORTCUT_HELP" = "Long-press Messages at the top of the inbox to show or hide hidden chats. Turn this off to leave that heading to Instagram.";
+"MESSAGES_HIDDEN_CHATS_REVEAL_SHORTCUT_TITLE" = "Reveal Shortcut";
 "MESSAGES_HIDDEN_CHATS_SHARE_REVEAL_SUBTITLE" = "Uniquement dans cette feuille de partage";
 "MESSAGES_HIDDEN_CHATS_SHARE_SHEET_HELP" = "Garde les discussions masquées hors des destinataires qu'Instagram suggère quand tu partages une publication ou commences un nouveau message. La recherche les trouve toujours, et un appui long sur le bouton de groupe à côté du champ de recherche les affiche dans cette feuille uniquement.";
 "MESSAGES_HIDDEN_CHATS_SHARE_SHEET_TITLE" = "Masquer de la feuille de partage";

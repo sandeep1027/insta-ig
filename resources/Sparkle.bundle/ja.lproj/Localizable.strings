@@ -1767,6 +1767,8 @@
 "MESSAGES_HIDDEN_CHATS_HELP" = "非表示にしたチャットを受信箱の一覧から取り除きます。チャットを長押しすると非表示になり、受信箱のタイトルを長押しすると非表示のチャットが戻ります。";
 "MESSAGES_HIDDEN_CHATS_HIDDEN_FORMAT" = "%@ を非表示にしました";
 "MESSAGES_HIDDEN_CHATS_HIDDEN_SUBTITLE" = "受信箱のタイトルを長押しで表示";
+"MESSAGES_HIDDEN_CHATS_INBOX_LONG_PRESS_HELP" = "Long-press a chat in the inbox to hide or unhide it. Turn this off to leave the chat long-press menu to Instagram.";
+"MESSAGES_HIDDEN_CHATS_INBOX_LONG_PRESS_TITLE" = "Inbox Long Press";
 "MESSAGES_HIDDEN_CHATS_LIST_EMPTY_SUBTITLE" = "受信箱でチャットを長押しし、「チャットを非表示」を選びます。";
 "MESSAGES_HIDDEN_CHATS_LIST_EMPTY_TITLE" = "非表示のチャットはまだありません";
 "MESSAGES_HIDDEN_CHATS_LIST_HELP" = "非表示にしたすべてのチャット。ユーザーネームで追加するか、行をスワイプして再表示できます。";
@@ -1793,6 +1795,8 @@
 "MESSAGES_HIDDEN_CHATS_REVEALED_TITLE" = "非表示のチャットを表示中";
 "MESSAGES_HIDDEN_CHATS_REVEAL_RESET_HELP" = "表示状態が終わるタイミング。「受信箱を離れたとき」は画面を離れるとすぐ再び非表示にし、「アプリがバックグラウンドに移動」は Instagram がバックグラウンドに入るまで表示を保ち、「手動」はもう一度タイトルを長押しするまで表示を保ちます。";
 "MESSAGES_HIDDEN_CHATS_REVEAL_RESET_TITLE" = "チャットを再び非表示";
+"MESSAGES_HIDDEN_CHATS_REVEAL_SHORTCUT_HELP" = "Long-press Messages at the top of the inbox to show or hide hidden chats. Turn this off to leave that heading to Instagram.";
+"MESSAGES_HIDDEN_CHATS_REVEAL_SHORTCUT_TITLE" = "Reveal Shortcut";
 "MESSAGES_HIDDEN_CHATS_SHARE_REVEAL_SUBTITLE" = "この共有シートのみ";
 "MESSAGES_HIDDEN_CHATS_SHARE_SHEET_HELP" = "投稿を共有するときや新規メッセージを作成するときにInstagramが提案する宛先から、非表示のチャットを除きます。検索では引き続き見つかり、検索フィールド横のグループボタンを長押しすると、そのシートでのみ表示されます。";
 "MESSAGES_HIDDEN_CHATS_SHARE_SHEET_TITLE" = "共有シートから隠す";

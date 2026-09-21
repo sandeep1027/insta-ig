@@ -14,12 +14,20 @@
 #import "../../Utils.h"
 
 // Chats the user has hidden are removed from the inbox list, and brought back for
-// as long as the inbox title is held down.
+// as long as the Messages heading in the inbox is held down.
 //
 // Everything here re-reads its preferences at call time, so the toggles take
 // effect without a restart. Filtering is deliberately confined to the inbox's own
 // list: search, thread creation and the requests inbox keep showing the thread, so
 // a hidden chat is never unreachable and the user can always long-press it back.
+
+static BOOL SPKHiddenChatsInboxLongPressEnabled(void) {
+    return SPKDirectHiddenChatsEnabled() && [SPKUtils getBoolPref:@"msgs_hidden_chats_inbox_long_press"];
+}
+
+static BOOL SPKHiddenChatsRevealShortcutEnabled(void) {
+    return SPKDirectHiddenChatsEnabled() && [SPKUtils getBoolPref:@"msgs_hidden_chats_reveal_shortcut"];
+}
 
 static const void *kSPKHiddenChatsGestureKey = &kSPKHiddenChatsGestureKey;
 
@@ -160,6 +168,7 @@ static BOOL SPKHiddenChatsShareRevealCoversController(UIViewController *controll
 static void SPKHiddenChatsScheduleShareRevealCheck(void);
 static UIViewController *SPKHiddenChatsRecipientListForView(UIView *view);
 static BOOL SPKHiddenChatsShareRevealAvailable(void);
+static BOOL SPKHiddenChatsViewIsInboxHeaderCell(UIView *view);
 
 @interface SPKHiddenChatsRevealGestureTarget : NSObject <UIGestureRecognizerDelegate>
 @end
@@ -203,6 +212,8 @@ static BOOL SPKHiddenChatsShareRevealAvailable(void);
 - (void)spk_handleTitleLongPress:(UILongPressGestureRecognizer *)recognizer {
     if (recognizer.state != UIGestureRecognizerStateBegan)
         return;
+    if (!SPKHiddenChatsRevealShortcutEnabled())
+        return;
     SPKHiddenChatsToggleReveal();
 }
 
@@ -212,13 +223,24 @@ static BOOL SPKHiddenChatsShareRevealAvailable(void);
     SPKHiddenChatsToggleShareReveal(recognizer.view);
 }
 
-/// Set only on the share sheet recogniser. It recognises, and so cancels the button's
-/// own tap, exactly when the long press is going to do something: inside a recipient
-/// list, with the feature on and something to show. Everywhere else it never begins,
-/// and the facepile button keeps opening the group composer on a held finger the way
-/// Instagram intends.
+/// Called for both the inbox-title gesture and the share-sheet facepile gesture.
+/// • Inbox gesture (view is the IGDirectInboxHeaderCell): always allow — the
+///   recognizer is already filtered to non-suggestion rows at install time.
+/// • Share gesture (view is the facepile button): only allow when there are hidden
+///   chats that can actually be revealed in the current recipient list.
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)recognizer {
-    return SPKHiddenChatsShareRevealAvailable() && SPKHiddenChatsRecipientListForView(recognizer.view) != nil;
+    UIView *view = recognizer.view;
+    if (view && SPKHiddenChatsViewIsInboxHeaderCell(view))
+        return SPKHiddenChatsRevealShortcutEnabled();
+    return SPKHiddenChatsShareRevealAvailable() && SPKHiddenChatsRecipientListForView(view) != nil;
+}
+
+/// Allow our gesture to fire alongside UICollectionView's internal gesture recognizers
+/// so long-pressing the Messages header doesn't get swallowed.
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
+    shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    (void)otherGestureRecognizer;
+    return gestureRecognizer.view != nil && SPKHiddenChatsViewIsInboxHeaderCell(gestureRecognizer.view);
 }
 
 @end
@@ -263,113 +285,199 @@ static void SPKHiddenChatsToggleReveal(void) {
     });
 }
 
-#pragma mark - Reveal gesture: Instagram's own title long press
+#pragma mark - Reveal gesture: Messages heading in the inbox
 
-// The inbox header already recognises a long press on its title and forwards it to
-// its delegate, so the reveal rides on that recogniser instead of adding a second
-// one to the same label, where the two would compete for the touch. The callback is
-// underscore prefixed on older builds and unprefixed on the Swift header view.
-static void (*SPKHiddenChatsOrigTitleLongPress)(id, SEL, id);
+// FLEX on IG 447: the heading is IGDirectInboxHeaderCell.IGDirectInboxHeaderCell
+// (UICollectionViewCell, 45pt) with a 16pt UILabel "Messages" inside
+// IGDirectInboxViewController. Not the navigation-header title (account switcher).
 
-static void SPKHiddenChatsTitleLongPress(id self, SEL _cmd, id recognizer) {
-    SPKHiddenChatsOrigTitleLongPress(self, _cmd, recognizer);
-    if ([recognizer isKindOfClass:[UIGestureRecognizer class]] &&
-        ((UIGestureRecognizer *)recognizer).state != UIGestureRecognizerStateBegan)
-        return;
-    SPKHiddenChatsToggleReveal();
-}
-
-static BOOL SPKHiddenChatsInstallTitleLongPressHook(void) {
-    Class headerClass = SPKResolveIGClass(@"IGDirectInboxNavigationHeaderView.IGDirectInboxNavigationHeaderView",
-                                          @"IGDirectInboxNavigationHeaderView");
-    if (!headerClass)
+static BOOL SPKHiddenChatsTitleLooksLikeSuggestion(NSString *title) {
+    if (![title isKindOfClass:[NSString class]] || title.length == 0)
         return NO;
-
-    for (NSString *name in @[ @"titleLabelLongPressed:", @"_titleLabelLongPressed:" ]) {
-        SEL selector = NSSelectorFromString(name);
-        if (!class_getInstanceMethod(headerClass, selector))
-            continue;
-        MSHookMessageEx(headerClass, selector, (IMP)SPKHiddenChatsTitleLongPress, (IMP *)&SPKHiddenChatsOrigTitleLongPress);
-        SPKLog(@"Messages", @"[Sparkle HiddenChats] Reveal riding on the header title long press class=%@ selector=%@",
-               NSStringFromClass(headerClass),
-               name);
+    if ([title isEqualToString:@"Suggestions"] || [title isEqualToString:@"Suggested"])
         return YES;
-    }
-    return NO;
+    return [title hasPrefix:@"Accounts to"];
 }
 
-#pragma mark - Reveal gesture: fallback recogniser
-
-/// The title label the fallback gesture attaches to. Instance variables are
-/// underscore prefixed on the older view controller and unprefixed on the Swift one,
-/// and the title is drawn either as a plain label or inside a navigation header, so
-/// each spelling is tried before giving up.
-static UIView *SPKHiddenChatsTitleView(UIViewController *inbox) {
-    for (NSString *name in @[ @"_titleLabelView", @"titleLabelView" ]) {
-        UIView *label = [SPKUtils getIvarForObj:inbox name:name.UTF8String];
-        if ([label isKindOfClass:[UILabel class]])
-            return label;
+static BOOL SPKHiddenChatsHeaderModelIsSuggestion(id model) {
+    if (!model)
+        return NO;
+    NSString *title = nil;
+    @try {
+        if ([model respondsToSelector:@selector(title)])
+            title = ((id (*)(id, SEL))objc_msgSend)(model, @selector(title));
+    } @catch (__unused NSException *exception) {
+        title = nil;
     }
+    return SPKHiddenChatsTitleLooksLikeSuggestion(title);
+}
 
-    for (NSString *name in @[ @"_navigationHeaderView", @"navigationHeaderView" ]) {
-        UIView *header = [SPKUtils getIvarForObj:inbox name:name.UTF8String];
-        if (![header isKindOfClass:[UIView class]])
-            continue;
-        NSMutableArray<UIView *> *queue = [NSMutableArray arrayWithObject:header];
-        // Breadth-first and shallow on purpose: the title sits near the top of the
-        // header, and a deep walk on every appearance is exactly the kind of tree
-        // traversal that shows up as navigation lag.
-        for (NSUInteger depth = 0; depth < 3 && queue.count > 0; depth++) {
-            NSMutableArray<UIView *> *next = [NSMutableArray array];
-            for (UIView *view in queue) {
-                if ([view isKindOfClass:[UILabel class]] && ((UILabel *)view).text.length > 0)
-                    return view;
-                [next addObjectsFromArray:view.subviews];
-            }
-            queue = next;
+static BOOL SPKHiddenChatsViewIsInboxHeaderCell(UIView *view) {
+    NSString *name = NSStringFromClass(view.class);
+    return [name containsString:@"IGDirectInboxHeaderCell"];
+}
+
+static UILabel *SPKHiddenChatsFirstLabel(UIView *view) {
+    NSMutableArray<UIView *> *queue = [NSMutableArray arrayWithObject:view];
+    for (NSUInteger i = 0; i < queue.count && i < 24; i++) {
+        UIView *node = queue[i];
+        if ([node isKindOfClass:[UILabel class]]) {
+            NSString *text = ((UILabel *)node).text;
+            if (text.length > 0)
+                return (UILabel *)node;
         }
+        [queue addObjectsFromArray:node.subviews];
     }
-
-    UIView *titleView = inbox.navigationItem.titleView;
-    return [titleView isKindOfClass:[UIView class]] ? titleView : nil;
+    return nil;
 }
 
-static void SPKHiddenChatsInstallRevealGesture(UIViewController *inbox) {
-    if (!SPKDirectHiddenChatsEnabled())
-        return;
-    if (objc_getAssociatedObject(inbox, kSPKHiddenChatsGestureKey))
-        return;
+static NSString *SPKHiddenChatsFirstLabelText(UIView *view) {
+    return SPKHiddenChatsFirstLabel(view).text;
+}
 
-    UIView *titleView = SPKHiddenChatsTitleView(inbox);
-    if (!titleView) {
-        SPKLog(@"Messages", @"[Sparkle HiddenChats] Reveal gesture not installed: no inbox title view");
+static void SPKHiddenChatsAddRevealGesture(UIView *view) {
+    if (!view)
         return;
+    if (SPKHiddenChatsViewIsInboxHeaderCell(view)) {
+        // Skip suggestion rows — only the "Messages" header should reveal chats.
+        if (SPKHiddenChatsTitleLooksLikeSuggestion(SPKHiddenChatsFirstLabelText(view)))
+            return;
     }
 
-    titleView.userInteractionEnabled = YES;
+    // Guard: one gesture per view. Use the cell itself as the touch target so
+    // the full 402×45 pt header bar is interactive, not just the small label.
+    // UILabel inside a UICollectionViewCell is not a reliable gesture target.
+    if (objc_getAssociatedObject(view, kSPKHiddenChatsGestureKey))
+        return;
+
     UILongPressGestureRecognizer *recognizer =
         [[UILongPressGestureRecognizer alloc] initWithTarget:[SPKHiddenChatsRevealGestureTarget shared]
                                                       action:@selector(spk_handleTitleLongPress:)];
-    // Instagram puts its own gestures on the header (the account switcher among
-    // them); ours must not cancel them when it does nothing.
     recognizer.cancelsTouchesInView = NO;
-    [titleView addGestureRecognizer:recognizer];
-    objc_setAssociatedObject(inbox, kSPKHiddenChatsGestureKey, recognizer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    SPKLog(@"Messages", @"[Sparkle HiddenChats] Installed fallback reveal gesture on %@<%p>",
-           NSStringFromClass([titleView class]),
-           titleView);
+    recognizer.delegate = [SPKHiddenChatsRevealGestureTarget shared];
+    [view addGestureRecognizer:recognizer];
+    objc_setAssociatedObject(view, kSPKHiddenChatsGestureKey, recognizer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    SPKLog(@"Messages", @"[Sparkle HiddenChats] Reveal gesture installed on %@<%p>",
+           NSStringFromClass([view class]), view);
 }
+
+static UIView *SPKHiddenChatsFindMessagesHeaderCell(UIView *root) {
+    if (!root)
+        return nil;
+    NSMutableArray<UIView *> *queue = [NSMutableArray arrayWithObject:root];
+    // 200-node cap: enough to cover a full inbox with many thread cells above the header.
+    for (NSUInteger i = 0; i < queue.count && i < 200; i++) {
+        UIView *node = queue[i];
+        if (SPKHiddenChatsViewIsInboxHeaderCell(node) &&
+            !SPKHiddenChatsTitleLooksLikeSuggestion(SPKHiddenChatsFirstLabelText(node)))
+            return node;
+        NSString *name = NSStringFromClass(node.class);
+        if ([name containsString:@"ThreadCell"])
+            continue;
+        [queue addObjectsFromArray:node.subviews];
+    }
+    return nil;
+}
+
+static void SPKHiddenChatsInstallRevealOnMessagesTitle(UIViewController *inbox) {
+    if (!SPKDirectHiddenChatsEnabled())
+        return;
+    UIView *cell = SPKHiddenChatsFindMessagesHeaderCell(inbox.view);
+    if (cell)
+        SPKHiddenChatsAddRevealGesture(cell);
+}
+
+%group SPKHiddenChatsHeaderCellViewHooks
+
+%hook IGDirectInboxHeaderCell
+
+- (void)didMoveToWindow {
+    %orig;
+    if ([(UIView *)self window])
+        SPKHiddenChatsAddRevealGesture(self);
+}
+
+- (void)layoutSubviews {
+    %orig;
+    SPKHiddenChatsAddRevealGesture(self);
+}
+
+%end
+
+%end
+
+%group SPKHiddenChatsHeaderCellRevealHooks
+
+%hook IGDirectInboxHeaderSectionController
+
+- (id)cellForItemAtIndex:(NSInteger)index {
+    id cell = %orig;
+    id model = nil;
+    if ([self respondsToSelector:@selector(viewModel)])
+        model = ((id (*)(id, SEL))objc_msgSend)(self, @selector(viewModel));
+    if (!model) {
+        @try {
+            model = [self valueForKey:@"object"];
+        } @catch (__unused NSException *exception) {
+            model = nil;
+        }
+    }
+    if (!SPKHiddenChatsHeaderModelIsSuggestion(model) && [cell isKindOfClass:[UIView class]])
+        SPKHiddenChatsAddRevealGesture((UIView *)cell);
+    return cell;
+}
+
+%end
+
+%end
+
+// Fallback: catch the header cell by name when the typed hook group above could not
+// resolve the class (class name changed between IG versions). UICollectionViewCell is
+// always available and the header cell is always a subclass of it.
+// The associated-object guard in SPKHiddenChatsAddRevealGesture prevents double-installation
+// when both the typed hook and this fallback fire on the same cell.
+%group SPKHiddenChatsHeaderCellFallbackHooks
+
+%hook UICollectionViewCell
+
+- (void)didMoveToWindow {
+    %orig;
+    if (![(UIView *)self window])
+        return;
+    if (!SPKHiddenChatsViewIsInboxHeaderCell((UIView *)self))
+        return;
+    if (SPKHiddenChatsTitleLooksLikeSuggestion(SPKHiddenChatsFirstLabelText((UIView *)self)))
+        return;
+    SPKHiddenChatsAddRevealGesture((UIView *)self);
+}
+
+- (void)layoutSubviews {
+    %orig;
+    if (!SPKHiddenChatsViewIsInboxHeaderCell((UIView *)self))
+        return;
+    if (SPKHiddenChatsTitleLooksLikeSuggestion(SPKHiddenChatsFirstLabelText((UIView *)self)))
+        return;
+    SPKHiddenChatsAddRevealGesture((UIView *)self);
+}
+
+%end
+
+%end
 
 #pragma mark - Inbox lifecycle
 
-// NO while the reveal rides on Instagram's own title long press, which is the normal
-// case; the fallback recogniser is only added when that callback is missing.
-static BOOL SPKHiddenChatsNeedsFallbackGesture = NO;
-
 static void SPKHiddenChatsNoteInboxAppeared(UIViewController *inbox) {
     SPKHiddenChatsVisibleInbox = inbox;
-    if (SPKHiddenChatsNeedsFallbackGesture)
-        SPKHiddenChatsInstallRevealGesture(inbox);
+    SPKHiddenChatsInstallRevealOnMessagesTitle(inbox);
+    // The collection view may still be populating its cells when viewDidAppear: fires.
+    // Retry once after a short delay so the header cell is in the tree.
+    __weak UIViewController *weakInbox = inbox;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)),
+                   dispatch_get_main_queue(), ^{
+        UIViewController *strongInbox = weakInbox;
+        if (strongInbox)
+            SPKHiddenChatsInstallRevealOnMessagesTitle(strongInbox);
+    });
     if (SPKDirectHiddenChatsEnabled() && SPKHiddenChatsRenderedGeneration != SPKHiddenChatsGeneration)
         [SPKHiddenChatsRevealGestureTarget spk_reloadListForViewController:inbox];
 }
@@ -938,6 +1046,65 @@ static NSArray *SPKHiddenChatsFilterInboxSearchObjects(id dataSource, NSArray *o
 
 %end
 
+/// Explore / typeahead search (IGSearchTypeaheadViewController). Hidden 1:1
+/// usernames are dropped from the results so a hidden person does not surface
+/// there the way they still can from a typed inbox search.
+static NSString *SPKHiddenChatsSearchResultUsername(id object) {
+    if (!object)
+        return nil;
+    id title = nil;
+    if ([object respondsToSelector:@selector(title)])
+        title = ((id (*)(id, SEL))objc_msgSend)(object, @selector(title));
+    if ([title isKindOfClass:[NSAttributedString class]])
+        title = [(NSAttributedString *)title string];
+    if ([title isKindOfClass:[NSString class]] && [(NSString *)title length] > 0)
+        return title;
+    @try {
+        id username = [object valueForKeyPath:@"user.username"];
+        if ([username isKindOfClass:[NSString class]] && [(NSString *)username length] > 0)
+            return username;
+        username = [object valueForKey:@"username"];
+        if ([username isKindOfClass:[NSString class]] && [(NSString *)username length] > 0)
+            return username;
+    } @catch (__unused NSException *exception) {
+    }
+    return nil;
+}
+
+static NSArray *SPKHiddenChatsFilterExploreSearchObjects(NSArray *objects) {
+    if (![objects isKindOfClass:[NSArray class]] || objects.count == 0)
+        return objects;
+    if (!SPKDirectHiddenChatsEnabled() || SPKDirectHiddenChatCount() == 0)
+        return objects;
+
+    NSMutableArray *filtered = [NSMutableArray arrayWithCapacity:objects.count];
+    for (id object in objects) {
+        NSString *username = SPKHiddenChatsSearchResultUsername(object);
+        if (username.length > 0 && SPKDirectHiddenChatListContainsUsername(username))
+            continue;
+        [filtered addObject:object];
+    }
+    if (filtered.count != objects.count) {
+        SPKLog(@"Messages", @"[Sparkle HiddenChats] Filtered explore search total=%lu shown=%lu",
+               (unsigned long)objects.count,
+               (unsigned long)filtered.count);
+    }
+    return filtered.copy;
+}
+
+%group SPKHiddenChatsExploreSearchHooks
+
+%hook IGSearchListKitDataSource
+
+- (id)objectsForListAdapter:(id)adapter {
+    (void)adapter;
+    return SPKHiddenChatsFilterExploreSearchObjects(%orig);
+}
+
+%end
+
+%end
+
 %group SPKHiddenChatsShareSheetHooks
 
 %hook IGDirectRecipientListViewController
@@ -1094,7 +1261,7 @@ extern "C" void SPKInstallHiddenChatsHooksIfEnabled(void) {
     dispatch_once(&onceToken, ^{
         SPKDirectInboxMenuRegisterProvider(@"hidden_chats", 0, ^NSArray<UIMenuElement *> *(SPKDirectThreadContext *context, id viewModel) {
             (void)viewModel;
-            if (!SPKDirectHiddenChatsEnabled())
+            if (!SPKHiddenChatsInboxLongPressEnabled())
                 return nil;
             NSString *title = SPKDirectHiddenChatsMenuActionTitle(context);
             if (title.length == 0)
@@ -1114,9 +1281,24 @@ extern "C" void SPKInstallHiddenChatsHooksIfEnabled(void) {
         });
         SPKDirectInboxMenuInstallHooksIfNeeded();
         SPKHiddenChatsInstallHapticHook();
-        SPKHiddenChatsNeedsFallbackGesture = !SPKHiddenChatsInstallTitleLongPressHook();
-        if (SPKHiddenChatsNeedsFallbackGesture)
-            SPKLog(@"Messages", @"[Sparkle HiddenChats] Inbox header title long press unavailable, falling back to an added recogniser");
+        Class inboxHeaderCell = SPKResolveIGClass(@"IGDirectInboxHeaderCell.IGDirectInboxHeaderCell",
+                                                  @"IGDirectInboxHeaderCell");
+        if (inboxHeaderCell)
+            %init(SPKHiddenChatsHeaderCellViewHooks, IGDirectInboxHeaderCell = inboxHeaderCell);
+        else
+            SPKLog(@"Messages", @"[Sparkle HiddenChats] IGDirectInboxHeaderCell unavailable");
+        // Fallback: hook UICollectionViewCell by class-name substring when the typed
+        // class could not be resolved. Always installed alongside the typed hook — the
+        // associated-object guard prevents double-installation when both run.
+        %init(SPKHiddenChatsHeaderCellFallbackHooks);
+        // The section controller lives in the same Swift module as the cell.
+        // Try the current module name first, then the old one as a fallback.
+        Class inboxHeaderSection =
+            objc_getClass("IGDirectInboxHeaderCell.IGDirectInboxHeaderSectionController") ?:
+            objc_getClass("IGDirectInboxViewControllerSwift.IGDirectInboxHeaderSectionController") ?:
+            objc_getClass("IGDirectInboxHeaderSectionController");
+        if (inboxHeaderSection)
+            %init(SPKHiddenChatsHeaderCellRevealHooks, IGDirectInboxHeaderSectionController = inboxHeaderSection);
 
         %init(SPKHiddenChatsInboxHooks,
               IGDirectInboxListAdapterDataSource = SPKResolveIGClass(@"IGDirectInboxListAdapterDataSource.IGDirectInboxListAdapterDataSource", @"IGDirectInboxListAdapterDataSource"));
@@ -1130,6 +1312,9 @@ extern "C" void SPKInstallHiddenChatsHooksIfEnabled(void) {
             %init(SPKHiddenChatsShareRevealGestureHooks);
         if (NSClassFromString(@"IGDirectInboxSearchListAdapterDataSource"))
             %init(SPKHiddenChatsInboxSearchHooks);
+        Class exploreSearch = SPKResolveIGClass(@"IGGenericSearch.IGSearchListKitDataSource", @"IGSearchListKitDataSource");
+        if (exploreSearch)
+            %init(SPKHiddenChatsExploreSearchHooks, IGSearchListKitDataSource = exploreSearch);
         if (NSClassFromString(@"IGDirectRecipientListViewController"))
             %init(SPKHiddenChatsShareSheetHooks);
         if (NSClassFromString(@"IGDirectThreadCreationViewController"))

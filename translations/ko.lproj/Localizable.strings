@@ -1767,6 +1767,8 @@
 "MESSAGES_HIDDEN_CHATS_HELP" = "숨긴 채팅을 받은 메시지함 목록에서 제외합니다. 채팅을 길게 눌러 숨기고, 받은 메시지함 제목을 길게 눌러 숨긴 채팅을 다시 불러옵니다.";
 "MESSAGES_HIDDEN_CHATS_HIDDEN_FORMAT" = "%@ 숨김";
 "MESSAGES_HIDDEN_CHATS_HIDDEN_SUBTITLE" = "받은 메시지함 제목을 길게 눌러 표시";
+"MESSAGES_HIDDEN_CHATS_INBOX_LONG_PRESS_HELP" = "Long-press a chat in the inbox to hide or unhide it. Turn this off to leave the chat long-press menu to Instagram.";
+"MESSAGES_HIDDEN_CHATS_INBOX_LONG_PRESS_TITLE" = "Inbox Long Press";
 "MESSAGES_HIDDEN_CHATS_LIST_EMPTY_SUBTITLE" = "받은 메시지함에서 채팅을 길게 누르고 채팅 숨기기를 선택하세요.";
 "MESSAGES_HIDDEN_CHATS_LIST_EMPTY_TITLE" = "아직 숨긴 채팅이 없습니다";
 "MESSAGES_HIDDEN_CHATS_LIST_HELP" = "숨긴 모든 채팅입니다. 사용자 이름으로 추가하거나, 행을 밀어 다시 표시하세요.";
@@ -1793,6 +1795,8 @@
 "MESSAGES_HIDDEN_CHATS_REVEALED_TITLE" = "숨긴 채팅 표시 중";
 "MESSAGES_HIDDEN_CHATS_REVEAL_RESET_HELP" = "표시 상태가 끝나는 시점입니다. 받은 메시지함을 벗어날 때는 화면을 벗어나는 즉시 다시 숨기고, 앱이 백그라운드로 전환될 때는 Instagram이 백그라운드로 갈 때까지 표시를 유지하며, 수동은 제목을 다시 길게 누를 때까지 표시를 유지합니다.";
 "MESSAGES_HIDDEN_CHATS_REVEAL_RESET_TITLE" = "채팅 다시 숨기기";
+"MESSAGES_HIDDEN_CHATS_REVEAL_SHORTCUT_HELP" = "Long-press Messages at the top of the inbox to show or hide hidden chats. Turn this off to leave that heading to Instagram.";
+"MESSAGES_HIDDEN_CHATS_REVEAL_SHORTCUT_TITLE" = "Reveal Shortcut";
 "MESSAGES_HIDDEN_CHATS_SHARE_REVEAL_SUBTITLE" = "이 공유 시트에서만";
 "MESSAGES_HIDDEN_CHATS_SHARE_SHEET_HELP" = "게시물을 공유하거나 새 메시지를 시작할 때 Instagram이 추천하는 수신자에서 숨긴 채팅을 제외합니다. 검색으로는 여전히 찾을 수 있고, 검색란 옆 그룹 버튼을 길게 누르면 해당 시트에서만 표시됩니다.";
 "MESSAGES_HIDDEN_CHATS_SHARE_SHEET_TITLE" = "공유 시트에서 숨기기";

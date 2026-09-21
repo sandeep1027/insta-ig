@@ -1767,6 +1767,8 @@
 "MESSAGES_HIDDEN_CHATS_HELP" = "يزيل المحادثات التي تخفيها من قائمة صندوق الوارد. اضغط مطولًا على محادثة لإخفائها، واضغط مطولًا على عنوان صندوق الوارد لإعادة المخفية.";
 "MESSAGES_HIDDEN_CHATS_HIDDEN_FORMAT" = "تم إخفاء %@";
 "MESSAGES_HIDDEN_CHATS_HIDDEN_SUBTITLE" = "اضغط مطولًا على عنوان صندوق الوارد للإظهار";
+"MESSAGES_HIDDEN_CHATS_INBOX_LONG_PRESS_HELP" = "Long-press a chat in the inbox to hide or unhide it. Turn this off to leave the chat long-press menu to Instagram.";
+"MESSAGES_HIDDEN_CHATS_INBOX_LONG_PRESS_TITLE" = "Inbox Long Press";
 "MESSAGES_HIDDEN_CHATS_LIST_EMPTY_SUBTITLE" = "اضغط مطولًا على محادثة في صندوق الوارد واختر إخفاء المحادثة.";
 "MESSAGES_HIDDEN_CHATS_LIST_EMPTY_TITLE" = "لا توجد محادثات مخفية بعد";
 "MESSAGES_HIDDEN_CHATS_LIST_HELP" = "كل محادثة أخفيتها. أضف واحدة باسم المستخدم، أو اسحب صفًا لإظهارها من جديد.";
@@ -1793,6 +1795,8 @@
 "MESSAGES_HIDDEN_CHATS_REVEALED_TITLE" = "عرض المحادثات المخفية";
 "MESSAGES_HIDDEN_CHATS_REVEAL_RESET_HELP" = "متى ينتهي الإظهار. عند مغادرة صندوق الوارد يعيد إخفاءها فور انتقالك، وعند انتقال التطبيق إلى الخلفية تبقى ظاهرة حتى ينتقل Instagram إلى الخلفية، ومع يدويًا تبقى ظاهرة حتى تضغط مطولًا على العنوان مرة أخرى.";
 "MESSAGES_HIDDEN_CHATS_REVEAL_RESET_TITLE" = "إعادة إخفاء المحادثات";
+"MESSAGES_HIDDEN_CHATS_REVEAL_SHORTCUT_HELP" = "Long-press Messages at the top of the inbox to show or hide hidden chats. Turn this off to leave that heading to Instagram.";
+"MESSAGES_HIDDEN_CHATS_REVEAL_SHORTCUT_TITLE" = "Reveal Shortcut";
 "MESSAGES_HIDDEN_CHATS_SHARE_REVEAL_SUBTITLE" = "في ورقة المشاركة هذه فقط";
 "MESSAGES_HIDDEN_CHATS_SHARE_SHEET_HELP" = "يبقي المحادثات المخفية خارج المستلمين الذين يقترحهم إنستغرام عند مشاركة منشور أو بدء رسالة جديدة. البحث ما زال يجدها، والضغط المطول على زر المجموعة بجوار حقل البحث يظهرها في تلك الورقة فقط.";
 "MESSAGES_HIDDEN_CHATS_SHARE_SHEET_TITLE" = "إخفاء من ورقة المشاركة";

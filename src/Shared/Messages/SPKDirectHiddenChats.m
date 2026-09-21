@@ -157,6 +157,30 @@ BOOL SPKDirectHiddenChatListContainsContext(SPKDirectThreadContext *context) {
     return SPKDirectHiddenChatListContainsParticipants(SPKHiddenChatsUserPKs(context.users), context.isGroup);
 }
 
+BOOL SPKDirectHiddenChatListContainsUsername(NSString *username) {
+    if (username.length == 0)
+        return NO;
+    // Normalize: lowercase and strip a leading '@', matching SPKShareBlocklistManager.
+    NSString *normalized = username.lowercaseString;
+    if ([normalized hasPrefix:@"@"])
+        normalized = [normalized substringFromIndex:1];
+    normalized = [normalized stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
+    if (normalized.length == 0)
+        return NO;
+    // Only 1:1 chats: hiding a group does not suppress every member on share surfaces.
+    for (NSDictionary *entry in SPKDirectHiddenChatList()) {
+        if ([entry[@"isGroup"] boolValue])
+            continue;
+        NSArray *users = [entry[@"users"] isKindOfClass:[NSArray class]] ? entry[@"users"] : nil;
+        for (NSDictionary *user in users) {
+            NSString *stored = [user[@"username"] isKindOfClass:[NSString class]] ? user[@"username"] : nil;
+            if ([stored.lowercaseString isEqualToString:normalized])
+                return YES;
+        }
+    }
+    return NO;
+}
+
 #pragma mark - Native mute
 
 // Hiding a chat only takes it out of the inbox. A push for it is handed to iOS by the

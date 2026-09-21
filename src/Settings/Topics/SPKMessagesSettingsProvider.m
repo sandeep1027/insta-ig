@@ -112,7 +112,7 @@ static NSArray *SPKHiddenChatsSettingsSections(void);
 
 static NSArray *SPKHiddenChatsSettingsSections(void) {
     // Hidden chats. The list row doubles as the recovery path: if a future IG build
-    // moves the inbox title the reveal gesture hangs off, the chats are still
+    // moves the Messages heading the reveal gesture hangs off, the chats are still
     // reachable and un-hideable from here.
     SPKSetting *hiddenChats = [SPKSetting switchCellWithTitle:SPKL(@"MESSAGES_HIDDEN_CHATS_TITLE")
                                                          icon:SPKSettingsIcon(@"messages_off")
@@ -125,6 +125,22 @@ static NSArray *SPKHiddenChatsSettingsSections(void) {
                                                                          SPKSettingsIcon(@"clock"));
     hiddenChatsRevealReset.helpText = SPKL(@"MESSAGES_HIDDEN_CHATS_REVEAL_RESET_HELP");
     hiddenChatsRevealReset.enabledProvider = ^BOOL {
+        return [SPKUtils getBoolPref:@"msgs_hidden_chats"];
+    };
+
+    SPKSetting *hiddenChatsInboxLongPress = [SPKSetting switchCellWithTitle:SPKL(@"MESSAGES_HIDDEN_CHATS_INBOX_LONG_PRESS_TITLE")
+                                                                      icon:SPKSettingsIcon(@"messages")
+                                                               defaultsKey:@"msgs_hidden_chats_inbox_long_press"];
+    hiddenChatsInboxLongPress.helpText = SPKL(@"MESSAGES_HIDDEN_CHATS_INBOX_LONG_PRESS_HELP");
+    hiddenChatsInboxLongPress.enabledProvider = ^BOOL {
+        return [SPKUtils getBoolPref:@"msgs_hidden_chats"];
+    };
+
+    SPKSetting *hiddenChatsRevealShortcut = [SPKSetting switchCellWithTitle:SPKL(@"MESSAGES_HIDDEN_CHATS_REVEAL_SHORTCUT_TITLE")
+                                                                      icon:SPKSettingsIcon(@"eye")
+                                                               defaultsKey:@"msgs_hidden_chats_reveal_shortcut"];
+    hiddenChatsRevealShortcut.helpText = SPKL(@"MESSAGES_HIDDEN_CHATS_REVEAL_SHORTCUT_HELP");
+    hiddenChatsRevealShortcut.enabledProvider = ^BOOL {
         return [SPKUtils getBoolPref:@"msgs_hidden_chats"];
     };
 
@@ -189,6 +205,8 @@ static NSArray *SPKHiddenChatsSettingsSections(void) {
                         nil),
         SPKTopicSection(SPKL(@"MESSAGES_HIDDEN_CHATS_BEHAVIOR_HEADER"), @[
             hiddenChatsRevealReset,
+            hiddenChatsInboxLongPress,
+            hiddenChatsRevealShortcut,
             hiddenChatsMuteNotifications,
             hiddenChatsExcludeBadge,
             hiddenChatsShareSheet,

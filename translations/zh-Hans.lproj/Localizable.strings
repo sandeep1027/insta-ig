@@ -1767,6 +1767,8 @@
 "MESSAGES_HIDDEN_CHATS_HELP" = "把你隐藏的聊天从收件箱列表中移除。长按聊天即可隐藏，长按收件箱标题可让隐藏的聊天回来。";
 "MESSAGES_HIDDEN_CHATS_HIDDEN_FORMAT" = "已隐藏 %@";
 "MESSAGES_HIDDEN_CHATS_HIDDEN_SUBTITLE" = "长按收件箱标题以显示";
+"MESSAGES_HIDDEN_CHATS_INBOX_LONG_PRESS_HELP" = "Long-press a chat in the inbox to hide or unhide it. Turn this off to leave the chat long-press menu to Instagram.";
+"MESSAGES_HIDDEN_CHATS_INBOX_LONG_PRESS_TITLE" = "Inbox Long Press";
 "MESSAGES_HIDDEN_CHATS_LIST_EMPTY_SUBTITLE" = "在收件箱中长按聊天，然后选择“隐藏聊天”。";
 "MESSAGES_HIDDEN_CHATS_LIST_EMPTY_TITLE" = "还没有隐藏的聊天";
 "MESSAGES_HIDDEN_CHATS_LIST_HELP" = "你隐藏的所有聊天。可按用户名添加，或滑动某一行取消隐藏。";
@@ -1793,6 +1795,8 @@
 "MESSAGES_HIDDEN_CHATS_REVEALED_TITLE" = "正在显示隐藏的聊天";
 "MESSAGES_HIDDEN_CHATS_REVEAL_RESET_HELP" = "显示状态何时结束。“离开收件箱”会在你离开时立即重新隐藏，“应用进入后台”会让它们保持可见直到 Instagram 进入后台，“手动”会让它们保持可见直到你再次长按标题。";
 "MESSAGES_HIDDEN_CHATS_REVEAL_RESET_TITLE" = "重新隐藏聊天";
+"MESSAGES_HIDDEN_CHATS_REVEAL_SHORTCUT_HELP" = "Long-press Messages at the top of the inbox to show or hide hidden chats. Turn this off to leave that heading to Instagram.";
+"MESSAGES_HIDDEN_CHATS_REVEAL_SHORTCUT_TITLE" = "Reveal Shortcut";
 "MESSAGES_HIDDEN_CHATS_SHARE_REVEAL_SUBTITLE" = "仅在此分享面板中";
 "MESSAGES_HIDDEN_CHATS_SHARE_SHEET_HELP" = "在你分享帖子或新建消息时，将隐藏的聊天排除在 Instagram 推荐的收件人之外。搜索仍能找到它们，长按搜索框旁的群组按钮可仅在该面板中显示它们。";
 "MESSAGES_HIDDEN_CHATS_SHARE_SHEET_TITLE" = "从分享面板隐藏";
