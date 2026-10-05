@@ -980,10 +980,6 @@
 "GENERAL_SHARING_HEADER" = "Partage";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_HELP" = "Masque le bouton de création de groupe dans la feuille d'envoi et de partage d'Instagram.";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_TITLE" = "Masquer le bouton Créer un groupe";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_HELP" = "Hides usernames you add from Instagram's share sheet, quick send, and recipient lists. Restart after turning this on.";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_TITLE" = "Hide Share Recipients";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_HELP" = "Add or remove usernames that should stay hidden from share and recipient lists.";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_TITLE" = "Manage Hidden Recipients";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_PIN_ACTION" = "Épingler en haut";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_UNPIN_ACTION" = "Désépingler";
 "GENERAL_SHARING_PIN_RECIPIENTS_HELP" = "Maintenez la photo ou le nom d'une personne dans la feuille de partage pour l'épingler en haut de la liste, et maintenez à nouveau pour la désépingler. Maintenir un groupe affiche toujours ses membres, avec un bouton en dessous pour épingler ou désépingler le groupe.";
@@ -1763,6 +1759,8 @@
 "MESSAGES_HIDDEN_CHATS_CONFIRM_UNHIDE_TITLE" = "Réafficher cette discussion ?";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_HELP" = "Les messages non lus des discussions masquées ne comptent pas dans la pastille des messages.";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_TITLE" = "Exclure de la pastille";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_HELP" = "Keeps people from hidden chats out of Explore search. Turn this off to show them there again.";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_TITLE" = "Hide In Explore Search";
 "MESSAGES_HIDDEN_CHATS_HEADER" = "Discussions masquées";
 "MESSAGES_HIDDEN_CHATS_HELP" = "Retire de la liste de la boîte de réception les discussions que vous masquez. Appuyez longuement sur une discussion pour la masquer, et sur le titre de la boîte de réception pour ramener les discussions masquées.";
 "MESSAGES_HIDDEN_CHATS_HIDDEN_FORMAT" = "%@ masqué";

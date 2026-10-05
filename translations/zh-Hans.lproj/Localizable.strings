@@ -980,10 +980,6 @@
 "GENERAL_SHARING_HEADER" = "分享";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_HELP" = "隐藏 Instagram 发送与分享面板中的创建群聊按钮。";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_TITLE" = "隐藏创建群组按钮";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_HELP" = "Hides usernames you add from Instagram's share sheet, quick send, and recipient lists. Restart after turning this on.";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_TITLE" = "Hide Share Recipients";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_HELP" = "Add or remove usernames that should stay hidden from share and recipient lists.";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_TITLE" = "Manage Hidden Recipients";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_PIN_ACTION" = "置顶";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_UNPIN_ACTION" = "取消置顶";
 "GENERAL_SHARING_PIN_RECIPIENTS_HELP" = "在分享面板中长按某人的头像或名字即可将其置顶到列表顶部，再次长按可取消置顶。长按群组仍会显示其成员，成员下方的按钮可置顶或取消置顶该群组。";
@@ -1763,6 +1759,8 @@
 "MESSAGES_HIDDEN_CHATS_CONFIRM_UNHIDE_TITLE" = "取消隐藏此聊天？";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_HELP" = "隐藏聊天中的未读消息不计入消息角标。";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_TITLE" = "排除出角标";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_HELP" = "Keeps people from hidden chats out of Explore search. Turn this off to show them there again.";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_TITLE" = "Hide In Explore Search";
 "MESSAGES_HIDDEN_CHATS_HEADER" = "隐藏的聊天";
 "MESSAGES_HIDDEN_CHATS_HELP" = "把你隐藏的聊天从收件箱列表中移除。长按聊天即可隐藏，长按收件箱标题可让隐藏的聊天回来。";
 "MESSAGES_HIDDEN_CHATS_HIDDEN_FORMAT" = "已隐藏 %@";

@@ -980,10 +980,6 @@
 "GENERAL_SHARING_HEADER" = "Teilen";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_HELP" = "Blendet den Button zum Erstellen einer Gruppe im Senden- und Teilen-Fenster von Instagram aus.";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_TITLE" = "Schaltfläche \"Gruppe erstellen\" ausblenden";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_HELP" = "Hides usernames you add from Instagram's share sheet, quick send, and recipient lists. Restart after turning this on.";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_TITLE" = "Hide Share Recipients";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_HELP" = "Add or remove usernames that should stay hidden from share and recipient lists.";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_TITLE" = "Manage Hidden Recipients";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_PIN_ACTION" = "Oben anheften";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_UNPIN_ACTION" = "Loslösen";
 "GENERAL_SHARING_PIN_RECIPIENTS_HELP" = "Halte im Teilen-Menü das Foto oder den Namen einer Person gedrückt, um sie oben in der Liste anzuheften, und erneut, um sie wieder zu lösen. Bei Gruppen werden weiterhin die Mitglieder angezeigt, darunter mit einer Taste zum Anheften oder Lösen der Gruppe.";
@@ -1763,6 +1759,8 @@
 "MESSAGES_HIDDEN_CHATS_CONFIRM_UNHIDE_TITLE" = "Chat wieder einblenden?";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_HELP" = "Ungelesene Nachrichten in ausgeblendeten Chats zählen nicht für das Nachrichten-Badge.";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_TITLE" = "Vom Badge ausschließen";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_HELP" = "Keeps people from hidden chats out of Explore search. Turn this off to show them there again.";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_TITLE" = "Hide In Explore Search";
 "MESSAGES_HIDDEN_CHATS_HEADER" = "Ausgeblendete Chats";
 "MESSAGES_HIDDEN_CHATS_HELP" = "Entfernt von dir ausgeblendete Chats aus der Postfachliste. Halte einen Chat gedrückt, um ihn auszublenden, und halte den Postfachtitel gedrückt, um die ausgeblendeten zurückzuholen.";
 "MESSAGES_HIDDEN_CHATS_HIDDEN_FORMAT" = "%@ ausgeblendet";

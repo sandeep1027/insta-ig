@@ -980,10 +980,6 @@
 "GENERAL_SHARING_HEADER" = "공유";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_HELP" = "Instagram의 전송 및 공유 시트에서 그룹 만들기 버튼을 숨깁니다.";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_TITLE" = "그룹 만들기 버튼 숨기기";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_HELP" = "Hides usernames you add from Instagram's share sheet, quick send, and recipient lists. Restart after turning this on.";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_TITLE" = "Hide Share Recipients";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_HELP" = "Add or remove usernames that should stay hidden from share and recipient lists.";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_TITLE" = "Manage Hidden Recipients";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_PIN_ACTION" = "맨 위에 고정";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_UNPIN_ACTION" = "고정 해제";
 "GENERAL_SHARING_PIN_RECIPIENTS_HELP" = "공유 시트에서 사람의 사진이나 이름을 길게 누르면 목록 맨 위에 고정되고, 다시 길게 누르면 고정이 해제됩니다. 그룹을 길게 누르면 기존처럼 멤버가 표시되며, 그 아래 버튼으로 그룹을 고정하거나 고정 해제할 수 있습니다.";
@@ -1763,6 +1759,8 @@
 "MESSAGES_HIDDEN_CHATS_CONFIRM_UNHIDE_TITLE" = "이 채팅을 다시 표시할까요?";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_HELP" = "숨긴 채팅의 읽지 않은 메시지는 메시지 배지에 포함되지 않습니다.";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_TITLE" = "배지에서 제외";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_HELP" = "Keeps people from hidden chats out of Explore search. Turn this off to show them there again.";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_TITLE" = "Hide In Explore Search";
 "MESSAGES_HIDDEN_CHATS_HEADER" = "숨긴 채팅";
 "MESSAGES_HIDDEN_CHATS_HELP" = "숨긴 채팅을 받은 메시지함 목록에서 제외합니다. 채팅을 길게 눌러 숨기고, 받은 메시지함 제목을 길게 눌러 숨긴 채팅을 다시 불러옵니다.";
 "MESSAGES_HIDDEN_CHATS_HIDDEN_FORMAT" = "%@ 숨김";

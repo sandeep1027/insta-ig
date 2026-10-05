@@ -980,10 +980,6 @@
 "GENERAL_SHARING_HEADER" = "Κοινοποίηση";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_HELP" = "Κρύβει το κουμπί δημιουργίας ομάδας στο φύλλο αποστολής και κοινοποίησης του Instagram.";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_TITLE" = "Απόκρυψη Κουμπιού Δημιουργίας Ομάδας";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_HELP" = "Hides usernames you add from Instagram's share sheet, quick send, and recipient lists. Restart after turning this on.";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_TITLE" = "Hide Share Recipients";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_HELP" = "Add or remove usernames that should stay hidden from share and recipient lists.";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_TITLE" = "Manage Hidden Recipients";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_PIN_ACTION" = "Καρφίτσωμα στην κορυφή";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_UNPIN_ACTION" = "Ξεκαρφίτσωμα";
 "GENERAL_SHARING_PIN_RECIPIENTS_HELP" = "Πατήστε παρατεταμένα τη φωτογραφία ή το όνομα ενός ατόμου στο φύλλο κοινοποίησης για να το καρφιτσώσετε στην κορυφή της λίστας και ξανά για ξεκαρφίτσωμα. Το παρατεταμένο πάτημα σε ομάδα εξακολουθεί να εμφανίζει τα μέλη της, με ένα κουμπί από κάτω για καρφίτσωμα ή ξεκαρφίτσωμα της ομάδας.";
@@ -1763,6 +1759,8 @@
 "MESSAGES_HIDDEN_CHATS_CONFIRM_UNHIDE_TITLE" = "Επανεμφάνιση αυτής της συνομιλίας;";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_HELP" = "Τα μη αναγνωσμένα μηνύματα σε κρυφές συνομιλίες δεν μετρούν στο σήμα μηνυμάτων.";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_TITLE" = "Εξαίρεση από το σήμα";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_HELP" = "Keeps people from hidden chats out of Explore search. Turn this off to show them there again.";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_TITLE" = "Hide In Explore Search";
 "MESSAGES_HIDDEN_CHATS_HEADER" = "Κρυφές συνομιλίες";
 "MESSAGES_HIDDEN_CHATS_HELP" = "Αφαιρεί από τη λίστα των εισερχομένων τις συνομιλίες που κρύβεις. Κράτα πατημένη μια συνομιλία για να την κρύψεις και κράτα πατημένο τον τίτλο των εισερχομένων για να επαναφέρεις τις κρυφές.";
 "MESSAGES_HIDDEN_CHATS_HIDDEN_FORMAT" = "Κρύφτηκε: %@";

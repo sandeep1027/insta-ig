@@ -980,10 +980,6 @@
 "GENERAL_SHARING_HEADER" = "Partajare";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_HELP" = "Ascunde butonul de creare a unui grup din panoul de trimitere și distribuire al Instagram.";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_TITLE" = "Ascunde buton creare grup";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_HELP" = "Hides usernames you add from Instagram's share sheet, quick send, and recipient lists. Restart after turning this on.";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_TITLE" = "Hide Share Recipients";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_HELP" = "Add or remove usernames that should stay hidden from share and recipient lists.";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_TITLE" = "Manage Hidden Recipients";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_PIN_ACTION" = "Fixează sus";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_UNPIN_ACTION" = "Anulează fixarea";
 "GENERAL_SHARING_PIN_RECIPIENTS_HELP" = "Ține apăsat pe fotografia sau numele unei persoane în foaia de partajare pentru a o fixa în partea de sus a listei, și ține apăsat din nou pentru a anula fixarea. Ținerea apăsată pe un grup afișează în continuare membrii acestuia, cu un buton dedesubt pentru a fixa sau a anula fixarea grupului.";
@@ -1763,6 +1759,8 @@
 "MESSAGES_HIDDEN_CHATS_CONFIRM_UNHIDE_TITLE" = "Reafișezi această conversație?";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_HELP" = "Mesajele necitite din conversațiile ascunse nu contează la indicatorul de mesaje.";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_TITLE" = "Exclude din indicator";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_HELP" = "Keeps people from hidden chats out of Explore search. Turn this off to show them there again.";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_TITLE" = "Hide In Explore Search";
 "MESSAGES_HIDDEN_CHATS_HEADER" = "Conversații ascunse";
 "MESSAGES_HIDDEN_CHATS_HELP" = "Elimină din lista de mesaje conversațiile pe care le ascunzi. Ține apăsat pe o conversație ca să o ascunzi și ține apăsat pe titlul mesajelor ca să le aduci înapoi.";
 "MESSAGES_HIDDEN_CHATS_HIDDEN_FORMAT" = "%@ ascunsă";

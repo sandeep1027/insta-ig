@@ -980,10 +980,6 @@
 "GENERAL_SHARING_HEADER" = "Udostępnianie";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_HELP" = "Ukrywa przycisk tworzenia grupy w arkuszu wysyłania i udostępniania Instagrama.";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_TITLE" = "Ukryj przycisk tworzenia grupy";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_HELP" = "Hides usernames you add from Instagram's share sheet, quick send, and recipient lists. Restart after turning this on.";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_TITLE" = "Hide Share Recipients";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_HELP" = "Add or remove usernames that should stay hidden from share and recipient lists.";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_TITLE" = "Manage Hidden Recipients";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_PIN_ACTION" = "Przypnij na górze";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_UNPIN_ACTION" = "Odepnij";
 "GENERAL_SHARING_PIN_RECIPIENTS_HELP" = "Przytrzymaj zdjęcie lub nazwę osoby w arkuszu udostępniania, aby przypiąć ją na górze listy, i przytrzymaj ponownie, aby odpiąć. Przytrzymanie grupy nadal pokazuje jej członków, a przycisk pod nimi przypina lub odpina grupę.";
@@ -1763,6 +1759,8 @@
 "MESSAGES_HIDDEN_CHATS_CONFIRM_UNHIDE_TITLE" = "Przywrócić ten czat?";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_HELP" = "Nieodczytane wiadomości w ukrytych czatach nie są liczone w odznace na Wiadomościach.";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_TITLE" = "Wyklucz z plakietki";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_HELP" = "Keeps people from hidden chats out of Explore search. Turn this off to show them there again.";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_TITLE" = "Hide In Explore Search";
 "MESSAGES_HIDDEN_CHATS_HEADER" = "Ukryte czaty";
 "MESSAGES_HIDDEN_CHATS_HELP" = "Usuwa czaty ukryte z listy skrzynki. Przytrzymaj czat, aby go ukryć, i przytrzymaj tytuł skrzynki, aby przywrócić ukryte.";
 "MESSAGES_HIDDEN_CHATS_HIDDEN_FORMAT" = "Ukryto %@";

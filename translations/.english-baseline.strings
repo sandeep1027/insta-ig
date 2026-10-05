@@ -980,10 +980,6 @@
 "GENERAL_SHARING_HEADER" = "Sharing";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_HELP" = "Hides the create group button in Instagram's send and share sheet.";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_TITLE" = "Hide Create Group Button";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_HELP" = "Hides usernames you add from Instagram's share sheet, quick send, and recipient lists. Restart after turning this on.";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_TITLE" = "Hide Share Recipients";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_HELP" = "Add or remove usernames that should stay hidden from share and recipient lists.";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_TITLE" = "Manage Hidden Recipients";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_PIN_ACTION" = "Pin to Top";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_UNPIN_ACTION" = "Unpin";
 "GENERAL_SHARING_PIN_RECIPIENTS_HELP" = "Hold a person's photo or name in the share sheet to pin them to the top of the list, and hold again to unpin. Holding a group still shows its members, with a button below them to pin or unpin the group.";
@@ -1754,7 +1750,7 @@
 "MESSAGES_HIDDEN_CHATS_ADD_CHAT_TITLE" = "Hide a Chat";
 "MESSAGES_HIDDEN_CHATS_ADD_CHAT_USER_NOT_FOUND_FORMAT" = "No account found for %@.";
 "MESSAGES_HIDDEN_CHATS_ALREADY_HIDDEN_FORMAT" = "%@ is already hidden";
-"MESSAGES_HIDDEN_CHATS_BEHAVIOR_FOOTER" = "1. Chooses when a reveal ends and the chats go back into hiding.\n2. Long-press a chat to hide or unhide it. Off leaves the chat long-press menu to Instagram.\n3. Long-press Messages at the top of the inbox to show hidden chats. Off leaves that heading to Instagram.\n4. Mutes hidden chats on Instagram, messages and calls both, so no push and no vibration arrives while they stay hidden. Unhiding a chat lifts the mute again, unless you had muted it yourself.\n5. Keeps unread messages in hidden chats out of the messages badge count.\n6. Keeps hidden chats out of the recipients Instagram suggests when you share a post or start a new message. Hold the group button beside the search field to show them there for that sheet only.";
+"MESSAGES_HIDDEN_CHATS_BEHAVIOR_FOOTER" = "1. Chooses when a reveal ends and the chats go back into hiding.\n2. Long-press a chat to hide or unhide it. Off leaves the chat long-press menu to Instagram.\n3. Long-press Messages at the top of the inbox to show hidden chats. Off leaves that heading to Instagram.\n4. Mutes hidden chats on Instagram, messages and calls both, so no push and no vibration arrives while they stay hidden. Unhiding a chat lifts the mute again, unless you had muted it yourself.\n5. Keeps unread messages in hidden chats out of the messages badge count.\n6. Keeps hidden chats out of the recipients Instagram suggests when you share a post or start a new message. Hold the group button beside the search field to show them there for that sheet only.\n7. Keeps people from hidden chats out of Explore search. Off shows them there again.";
 "MESSAGES_HIDDEN_CHATS_BEHAVIOR_HEADER" = "Behavior";
 "MESSAGES_HIDDEN_CHATS_CONCEALED_TITLE" = "Chats hidden again";
 "MESSAGES_HIDDEN_CHATS_CONFIRM_HIDE_MESSAGE_FORMAT" = "%@ will be removed from your inbox until you reveal your hidden chats.";
@@ -1763,6 +1759,8 @@
 "MESSAGES_HIDDEN_CHATS_CONFIRM_UNHIDE_TITLE" = "Unhide this chat?";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_HELP" = "Unread messages in hidden chats do not count toward the messages badge.";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_TITLE" = "Exclude From Badge";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_HELP" = "Keeps people from hidden chats out of Explore search. Turn this off to show them there again.";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_TITLE" = "Hide In Explore Search";
 "MESSAGES_HIDDEN_CHATS_HEADER" = "Hidden Chats";
 "MESSAGES_HIDDEN_CHATS_HELP" = "Removes chats you hide from the inbox list. Long-press a chat to hide it, and long-press Messages at the top of the inbox to bring the hidden ones back.";
 "MESSAGES_HIDDEN_CHATS_HIDDEN_FORMAT" = "Hid %@";

@@ -1095,8 +1095,13 @@ void SPKInstallTweakGeneralUIHooksIfNeeded(void) {
         ])) {
         static dispatch_once_t generalOnceToken;
         dispatch_once(&generalOnceToken, ^{
-            %init(SPKTweakGeneralUIHooks,
-                           IGSearchListKitDataSource = SPKResolveIGClass(@"IGGenericSearch.IGSearchListKitDataSource", @"IGSearchListKitDataSource"));
+            Class searchList = SPKResolveIGClass(@"IGGenericSearch.IGSearchListKitDataSource", @"IGSearchListKitDataSource");
+            if (searchList && class_getInstanceMethod(searchList, @selector(objectsForListAdapter:))) {
+                %init(SPKTweakGeneralUIHooks, IGSearchListKitDataSource = searchList);
+            } else {
+                SPKLog(@"General", @"[Sparkle] IGSearchListKitDataSource has no objectsForListAdapter: class=%@",
+                       searchList ? NSStringFromClass(searchList) : @"(none)");
+            }
         });
     }
 

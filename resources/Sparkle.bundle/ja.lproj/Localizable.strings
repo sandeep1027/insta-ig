@@ -980,10 +980,6 @@
 "GENERAL_SHARING_HEADER" = "シェア";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_HELP" = "Instagramの送信・共有シートにあるグループ作成ボタンを非表示にします。";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_TITLE" = "グループ作成ボタンを非表示";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_HELP" = "Hides usernames you add from Instagram's share sheet, quick send, and recipient lists. Restart after turning this on.";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_TITLE" = "Hide Share Recipients";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_HELP" = "Add or remove usernames that should stay hidden from share and recipient lists.";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_TITLE" = "Manage Hidden Recipients";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_PIN_ACTION" = "先頭に固定";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_UNPIN_ACTION" = "固定を解除";
 "GENERAL_SHARING_PIN_RECIPIENTS_HELP" = "共有シートで相手の写真または名前を長押しするとリストの先頭に固定され、もう一度長押しすると解除されます。グループを長押しするとこれまでどおりメンバーが表示され、その下のボタンでグループを固定または解除できます。";
@@ -1763,6 +1759,8 @@
 "MESSAGES_HIDDEN_CHATS_CONFIRM_UNHIDE_TITLE" = "このチャットの非表示を解除しますか？";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_HELP" = "非表示のチャットの未読メッセージはメッセージバッジに数えられません。";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_TITLE" = "バッジから除外";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_HELP" = "Keeps people from hidden chats out of Explore search. Turn this off to show them there again.";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_TITLE" = "Hide In Explore Search";
 "MESSAGES_HIDDEN_CHATS_HEADER" = "非表示のチャット";
 "MESSAGES_HIDDEN_CHATS_HELP" = "非表示にしたチャットを受信箱の一覧から取り除きます。チャットを長押しすると非表示になり、受信箱のタイトルを長押しすると非表示のチャットが戻ります。";
 "MESSAGES_HIDDEN_CHATS_HIDDEN_FORMAT" = "%@ を非表示にしました";

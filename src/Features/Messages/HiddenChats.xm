@@ -1002,32 +1002,98 @@ static void SPKHiddenChatsInstallShareRevealGesture(UIView *button) {
 
 %end
 
-/// Direct's own search screen shows a recents list before anything is typed, built
-/// from the same recipient models. That list is offered unasked, so it is filtered
-/// like the share sheet; results for a typed query are not, so a hidden chat stays
-/// findable by name.
+/// Inbox search (recents and typed results, including Businesses and creators)
+/// uses the same recipient cell models as the share sheet. Hidden 1:1 people are
+/// dropped here too; recovery is the Hidden Chats list, not typing their name.
+static NSString *SPKHiddenChatsUsernameFromRecipientObject(id object) {
+    id recipient = nil;
+    if ([object respondsToSelector:@selector(recipient)])
+        recipient = ((id (*)(id, SEL))objc_msgSend)(object, @selector(recipient));
+    NSArray *nodes = recipient ? @[ object, recipient ] : @[ object ];
+    for (id node in nodes) {
+        @try {
+            id username = [node valueForKey:@"username"];
+            if ([username isKindOfClass:[NSString class]] && [(NSString *)username length] > 0)
+                return username;
+            id users = [node valueForKey:@"users"];
+            if ([users isKindOfClass:[NSArray class]] && [(NSArray *)users count] == 1) {
+                id u = [[(NSArray *)users firstObject] valueForKey:@"username"];
+                if ([u isKindOfClass:[NSString class]] && [(NSString *)u length] > 0)
+                    return u;
+            }
+        } @catch (__unused NSException *exception) {
+        }
+    }
+    return nil;
+}
+
+static BOOL SPKHiddenChatsRecipientObjectIsGroup(id object) {
+    id recipient = nil;
+    if ([object respondsToSelector:@selector(recipient)])
+        recipient = ((id (*)(id, SEL))objc_msgSend)(object, @selector(recipient));
+    id node = recipient ?: object;
+    if ([node respondsToSelector:@selector(isGroupThread)])
+        return ((BOOL (*)(id, SEL))objc_msgSend)(node, @selector(isGroupThread));
+    @try {
+        id users = [node valueForKey:@"users"];
+        return [users isKindOfClass:[NSArray class]] && [(NSArray *)users count] > 1;
+    } @catch (__unused NSException *exception) {
+        return NO;
+    }
+}
+
+static BOOL SPKHiddenChatsControllerIsShareRecipientList(UIViewController *controller) {
+    for (NSUInteger depth = 0; controller && depth < 8; depth++) {
+        if (SPKHiddenChatsIsRecipientListController(controller))
+            return YES;
+        controller = controller.parentViewController;
+    }
+    return NO;
+}
+
+static BOOL SPKHiddenChatsControllerIsInboxSearch(UIViewController *controller) {
+    if (SPKHiddenChatsControllerIsShareRecipientList(controller))
+        return NO;
+    for (NSUInteger depth = 0; controller && depth < 8; depth++) {
+        NSString *name = NSStringFromClass(controller.class);
+        if ([name containsString:@"DirectInboxSearch"] || [name containsString:@"FullscreenSearch"])
+            return YES;
+        controller = controller.parentViewController;
+    }
+    return NO;
+}
+
+static BOOL SPKHiddenChatsShouldHideRecipientSearchObject(id object) {
+    if (!object || !SPKDirectHiddenChatsEnabled() || SPKHiddenChatsShareRevealed ||
+        !SPKDirectHiddenChatsShouldFilterInbox() || SPKDirectHiddenChatCount() == 0)
+        return NO;
+    id recipient = nil;
+    if ([object respondsToSelector:@selector(recipient)])
+        recipient = ((id (*)(id, SEL))objc_msgSend)(object, @selector(recipient));
+    if (recipient && SPKHiddenChatsRecipientIsHidden(recipient))
+        return YES;
+    NSString *username = SPKHiddenChatsUsernameFromRecipientObject(object);
+    return username.length > 0 && !SPKHiddenChatsRecipientObjectIsGroup(object) &&
+           SPKDirectHiddenChatListContainsUsername(username);
+}
+
 static NSArray *SPKHiddenChatsFilterInboxSearchObjects(id dataSource, NSArray *objects) {
+    (void)dataSource;
     if (![objects isKindOfClass:[NSArray class]] || objects.count == 0)
         return objects;
-    if (SPKHiddenChatsShareRevealed || !SPKHiddenChatsShareSheetFilterEnabled() || !SPKDirectHiddenChatsShouldFilterInbox())
+    if (!SPKDirectHiddenChatsEnabled() || SPKHiddenChatsShareRevealed || !SPKDirectHiddenChatsShouldFilterInbox())
         return objects;
-    if ([dataSource respondsToSelector:@selector(queryString)]) {
-        NSString *query = ((NSString *(*)(id, SEL))objc_msgSend)(dataSource, @selector(queryString));
-        if ([query isKindOfClass:[NSString class]] && query.length > 0)
-            return objects;
-    }
+    if (SPKDirectHiddenChatCount() == 0)
+        return objects;
 
     NSMutableArray *filtered = [NSMutableArray arrayWithCapacity:objects.count];
     for (id object in objects) {
-        id recipient = nil;
-        if ([object respondsToSelector:@selector(recipient)])
-            recipient = ((id (*)(id, SEL))objc_msgSend)(object, @selector(recipient));
-        if (recipient && SPKHiddenChatsRecipientIsHidden(recipient))
+        if (SPKHiddenChatsShouldHideRecipientSearchObject(object))
             continue;
         [filtered addObject:object];
     }
     if (filtered.count != objects.count) {
-        SPKLog(@"Messages", @"[Sparkle HiddenChats] Filtered inbox search recents total=%lu shown=%lu",
+        SPKLog(@"Messages", @"[Sparkle HiddenChats] Filtered inbox search total=%lu shown=%lu",
                (unsigned long)objects.count,
                (unsigned long)filtered.count);
     }
@@ -1040,6 +1106,69 @@ static NSArray *SPKHiddenChatsFilterInboxSearchObjects(id dataSource, NSArray *o
 
 - (id)objectsForListAdapter:(id)adapter {
     return SPKHiddenChatsFilterInboxSearchObjects(self, %orig);
+}
+
+%end
+
+%end
+
+%group SPKHiddenChatsInboxSearchListHooks
+
+%hook IGBasicListViewController
+
+- (id)objectsForListAdapter:(id)adapter {
+    id objects = %orig;
+    UIViewController *host = (UIViewController *)self;
+    if (SPKHiddenChatsControllerIsShareRecipientList(host)) {
+        if (!SPKHiddenChatsShareSheetFilterEnabled())
+            return objects;
+        UIViewController *list = host;
+        while (list && !SPKHiddenChatsIsRecipientListController(list))
+            list = list.parentViewController;
+        return SPKHiddenChatsFilterRecipientObjects(list ?: host, objects);
+    }
+    if (!SPKHiddenChatsControllerIsInboxSearch(host))
+        return objects;
+    return SPKHiddenChatsFilterInboxSearchObjects(self, objects);
+}
+
+%end
+
+%end
+
+// FLEX on 448: Businesses and creators rows are IGDirectRecipientSectionController
+// + IGDirectRecipientCellViewModel inside IGBasicListViewController. Filtering only
+// the search list adapter misses that nested list, so the section controller hides
+// the cell when the object is a hidden 1:1.
+static const void *kSPKHiddenChatsRecipientSectionHiddenKey = &kSPKHiddenChatsRecipientSectionHiddenKey;
+
+%group SPKHiddenChatsRecipientSectionHooks
+
+%hook IGDirectRecipientSectionController
+
+- (void)didUpdateToObject:(id)object {
+    %orig;
+    BOOL hide = NO;
+    UIViewController *host = nil;
+    if ([(id)self respondsToSelector:@selector(viewController)])
+        host = ((id (*)(id, SEL))objc_msgSend)((id)self, @selector(viewController));
+    if (SPKHiddenChatsControllerIsShareRecipientList(host))
+        hide = SPKHiddenChatsShareSheetFilterEnabled() && SPKHiddenChatsShouldHideRecipientSearchObject(object);
+    else if (SPKHiddenChatsControllerIsInboxSearch(host))
+        hide = SPKHiddenChatsShouldHideRecipientSearchObject(object);
+    objc_setAssociatedObject(self, kSPKHiddenChatsRecipientSectionHiddenKey, @(hide), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (NSInteger)numberOfItems {
+    if ([objc_getAssociatedObject((id)self, kSPKHiddenChatsRecipientSectionHiddenKey) boolValue])
+        return 0;
+    return %orig;
+}
+
+- (CGSize)sizeForItemAtIndex:(NSInteger)index {
+    if ([objc_getAssociatedObject((id)self, kSPKHiddenChatsRecipientSectionHiddenKey) boolValue])
+        return CGSizeZero;
+    return %orig;
 }
 
 %end
@@ -1071,18 +1200,33 @@ static NSString *SPKHiddenChatsSearchResultUsername(id object) {
     return nil;
 }
 
+static BOOL SPKHiddenChatsLooksLikeUsername(NSString *value) {
+    if (value.length == 0 || value.length > 30)
+        return NO;
+    if ([value containsString:@" "])
+        return NO;
+    return YES;
+}
+
 static NSArray *SPKHiddenChatsFilterExploreSearchObjects(NSArray *objects) {
     if (![objects isKindOfClass:[NSArray class]] || objects.count == 0)
         return objects;
-    if (!SPKDirectHiddenChatsEnabled() || SPKDirectHiddenChatCount() == 0)
+    if (!SPKDirectHiddenChatsEnabled() || ![SPKUtils getBoolPref:@"msgs_hidden_chats_hide_in_explore_search"])
+        return objects;
+    if (SPKDirectHiddenChatCount() == 0)
         return objects;
 
     NSMutableArray *filtered = [NSMutableArray arrayWithCapacity:objects.count];
     for (id object in objects) {
-        NSString *username = SPKHiddenChatsSearchResultUsername(object);
-        if (username.length > 0 && SPKDirectHiddenChatListContainsUsername(username))
-            continue;
-        [filtered addObject:object];
+        BOOL hide = NO;
+        @try {
+            NSString *username = SPKHiddenChatsSearchResultUsername(object);
+            hide = SPKHiddenChatsLooksLikeUsername(username) && SPKDirectHiddenChatListContainsUsername(username);
+        } @catch (__unused NSException *exception) {
+            hide = NO;
+        }
+        if (!hide)
+            [filtered addObject:object];
     }
     if (filtered.count != objects.count) {
         SPKLog(@"Messages", @"[Sparkle HiddenChats] Filtered explore search total=%lu shown=%lu",
@@ -1092,9 +1236,39 @@ static NSArray *SPKHiddenChatsFilterExploreSearchObjects(NSArray *objects) {
     return filtered.copy;
 }
 
+static BOOL SPKHiddenChatsClassHasListAdapterObjects(Class cls) {
+    return cls && class_getInstanceMethod(cls, @selector(objectsForListAdapter:));
+}
+
 %group SPKHiddenChatsExploreSearchHooks
 
 %hook IGSearchListKitDataSource
+
+- (id)objectsForListAdapter:(id)adapter {
+    (void)adapter;
+    return SPKHiddenChatsFilterExploreSearchObjects(%orig);
+}
+
+%end
+
+%end
+
+%group SPKHiddenChatsSearchNullStateHooks
+
+%hook IGSearchNullStateDataSource
+
+- (id)objectsForListAdapter:(id)adapter {
+    (void)adapter;
+    return SPKHiddenChatsFilterExploreSearchObjects(%orig);
+}
+
+%end
+
+%end
+
+%group SPKHiddenChatsPRMUserSearchHooks
+
+%hook PRMSearchTypeaheadUserDataSource
 
 - (id)objectsForListAdapter:(id)adapter {
     (void)adapter;
@@ -1312,9 +1486,24 @@ extern "C" void SPKInstallHiddenChatsHooksIfEnabled(void) {
             %init(SPKHiddenChatsShareRevealGestureHooks);
         if (NSClassFromString(@"IGDirectInboxSearchListAdapterDataSource"))
             %init(SPKHiddenChatsInboxSearchHooks);
+        if (NSClassFromString(@"IGDirectRecipientSectionController"))
+            %init(SPKHiddenChatsRecipientSectionHooks);
+        Class basicList = NSClassFromString(@"IGBasicListViewController");
+        if (SPKHiddenChatsClassHasListAdapterObjects(basicList))
+            %init(SPKHiddenChatsInboxSearchListHooks);
         Class exploreSearch = SPKResolveIGClass(@"IGGenericSearch.IGSearchListKitDataSource", @"IGSearchListKitDataSource");
-        if (exploreSearch)
+        if (SPKHiddenChatsClassHasListAdapterObjects(exploreSearch))
             %init(SPKHiddenChatsExploreSearchHooks, IGSearchListKitDataSource = exploreSearch);
+        else
+            SPKLog(@"Messages", @"[Sparkle HiddenChats] IGSearchListKitDataSource has no objectsForListAdapter: class=%@",
+                   exploreSearch ? NSStringFromClass(exploreSearch) : @"(none)");
+        Class searchNullState = SPKResolveIGClass(@"IGGenericSearch.IGSearchNullStateDataSource", @"IGSearchNullStateDataSource");
+        if (SPKHiddenChatsClassHasListAdapterObjects(searchNullState))
+            %init(SPKHiddenChatsSearchNullStateHooks, IGSearchNullStateDataSource = searchNullState);
+        Class prmUsers = SPKResolveIGClass(@"PRMSearchTypeaheadDataSource.PRMSearchTypeaheadUserDataSource",
+                                           @"PRMSearchTypeaheadUserDataSource");
+        if (SPKHiddenChatsClassHasListAdapterObjects(prmUsers))
+            %init(SPKHiddenChatsPRMUserSearchHooks, PRMSearchTypeaheadUserDataSource = prmUsers);
         if (NSClassFromString(@"IGDirectRecipientListViewController"))
             %init(SPKHiddenChatsShareSheetHooks);
         if (NSClassFromString(@"IGDirectThreadCreationViewController"))

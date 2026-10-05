@@ -980,10 +980,6 @@
 "GENERAL_SHARING_HEADER" = "การแชร์";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_HELP" = "ซ่อนปุ่มสร้างกลุ่มในแผงส่งและแชร์ของ Instagram";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_TITLE" = "ซ่อนปุ่มสร้างกลุ่ม";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_HELP" = "Hides usernames you add from Instagram's share sheet, quick send, and recipient lists. Restart after turning this on.";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_TITLE" = "Hide Share Recipients";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_HELP" = "Add or remove usernames that should stay hidden from share and recipient lists.";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_TITLE" = "Manage Hidden Recipients";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_PIN_ACTION" = "ปักหมุดไว้ด้านบน";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_UNPIN_ACTION" = "เลิกปักหมุด";
 "GENERAL_SHARING_PIN_RECIPIENTS_HELP" = "กดรูปภาพหรือชื่อของบุคคลค้างไว้ในแผ่นแชร์เพื่อปักหมุดไว้ด้านบนสุดของรายการ และกดค้างอีกครั้งเพื่อเลิกปักหมุด การกดกลุ่มค้างไว้จะยังคงแสดงสมาชิกของกลุ่ม พร้อมปุ่มด้านล่างสำหรับปักหมุดหรือเลิกปักหมุดกลุ่ม";
@@ -1763,6 +1759,8 @@
 "MESSAGES_HIDDEN_CHATS_CONFIRM_UNHIDE_TITLE" = "เลิกซ่อนแชทนี้หรือไม่?";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_HELP" = "ข้อความที่ยังไม่อ่านในแชทที่ซ่อนไว้จะไม่นับรวมในแบดจ์ข้อความ";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_TITLE" = "ไม่นับรวมในแบดจ์";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_HELP" = "Keeps people from hidden chats out of Explore search. Turn this off to show them there again.";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_TITLE" = "Hide In Explore Search";
 "MESSAGES_HIDDEN_CHATS_HEADER" = "แชทที่ซ่อนไว้";
 "MESSAGES_HIDDEN_CHATS_HELP" = "ลบแชทที่คุณซ่อนออกจากรายการกล่องข้อความ กดค้างที่แชทเพื่อซ่อน และกดค้างที่ชื่อกล่องข้อความเพื่อนำแชทที่ซ่อนไว้กลับมา";
 "MESSAGES_HIDDEN_CHATS_HIDDEN_FORMAT" = "ซ่อน %@ แล้ว";

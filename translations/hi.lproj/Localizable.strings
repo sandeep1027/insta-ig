@@ -980,10 +980,6 @@
 "GENERAL_SHARING_HEADER" = "साझाकरण";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_HELP" = "Instagram की भेजें और शेयर शीट में ग्रुप बनाएं बटन छिपाता है।";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_TITLE" = "समूह बनाएं बटन छिपाएं";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_HELP" = "Hides usernames you add from Instagram's share sheet, quick send, and recipient lists. Restart after turning this on.";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_TITLE" = "Hide Share Recipients";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_HELP" = "Add or remove usernames that should stay hidden from share and recipient lists.";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_TITLE" = "Manage Hidden Recipients";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_PIN_ACTION" = "सबसे ऊपर पिन करें";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_UNPIN_ACTION" = "अनपिन करें";
 "GENERAL_SHARING_PIN_RECIPIENTS_HELP" = "शेयर शीट में किसी व्यक्ति की फ़ोटो या नाम को दबाकर रखें ताकि वह सूची में सबसे ऊपर पिन हो जाए, और अनपिन करने के लिए फिर से दबाकर रखें। किसी ग्रुप को दबाकर रखने पर अब भी उसके सदस्य दिखते हैं, और उनके नीचे ग्रुप को पिन या अनपिन करने का बटन होता है।";
@@ -1763,6 +1759,8 @@
 "MESSAGES_HIDDEN_CHATS_CONFIRM_UNHIDE_TITLE" = "इस चैट को फिर से दिखाएं?";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_HELP" = "छिपी चैट के अपठित संदेश संदेश बैज में नहीं गिने जाते।";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_TITLE" = "बैज से बाहर रखें";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_HELP" = "Keeps people from hidden chats out of Explore search. Turn this off to show them there again.";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_TITLE" = "Hide In Explore Search";
 "MESSAGES_HIDDEN_CHATS_HEADER" = "छिपी चैट";
 "MESSAGES_HIDDEN_CHATS_HELP" = "आपकी छिपाई गई चैट को इनबॉक्स सूची से हटाता है। किसी चैट को देर तक दबाकर छिपाएँ, और छिपी चैट वापस लाने के लिए इनबॉक्स शीर्षक को देर तक दबाएँ।";
 "MESSAGES_HIDDEN_CHATS_HIDDEN_FORMAT" = "%@ छिपाई गई";

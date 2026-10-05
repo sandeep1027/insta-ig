@@ -980,10 +980,6 @@
 "GENERAL_SHARING_HEADER" = "اشتراک‌گذاری";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_HELP" = "دکمه ساخت گروه را در برگه ارسال و اشتراک‌گذاری اینستاگرام پنهان می‌کند.";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_TITLE" = "پنهان‌سازی دکمه ساخت گروه";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_HELP" = "Hides usernames you add from Instagram's share sheet, quick send, and recipient lists. Restart after turning this on.";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_TITLE" = "Hide Share Recipients";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_HELP" = "Add or remove usernames that should stay hidden from share and recipient lists.";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_TITLE" = "Manage Hidden Recipients";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_PIN_ACTION" = "سنجاق در بالا";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_UNPIN_ACTION" = "برداشتن سنجاق";
 "GENERAL_SHARING_PIN_RECIPIENTS_HELP" = "در برگه اشتراک‌گذاری، عکس یا نام یک نفر را نگه دارید تا در بالای فهرست سنجاق شود و برای برداشتن سنجاق دوباره نگه دارید. نگه داشتن یک گروه همچنان اعضای آن را نشان می‌دهد و دکمه‌ای زیر آن‌ها گروه را سنجاق می‌کند یا سنجاقش را برمی‌دارد.";
@@ -1763,6 +1759,8 @@
 "MESSAGES_HIDDEN_CHATS_CONFIRM_UNHIDE_TITLE" = "این چت آشکار شود؟";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_HELP" = "پیام‌های نخوانده در چت‌های پنهان در شمار نشان پیام‌ها به حساب نمی‌آیند.";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_TITLE" = "حذف از نشان";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_HELP" = "Keeps people from hidden chats out of Explore search. Turn this off to show them there again.";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_TITLE" = "Hide In Explore Search";
 "MESSAGES_HIDDEN_CHATS_HEADER" = "چت‌های پنهان";
 "MESSAGES_HIDDEN_CHATS_HELP" = "چت‌هایی را که پنهان می‌کنید از فهرست صندوق ورودی حذف می‌کند. برای پنهان کردن یک چت روی آن فشار طولانی دهید، و برای بازگرداندن چت‌های پنهان روی عنوان صندوق ورودی فشار طولانی دهید.";
 "MESSAGES_HIDDEN_CHATS_HIDDEN_FORMAT" = "%@ پنهان شد";

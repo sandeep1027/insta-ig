@@ -980,10 +980,6 @@
 "GENERAL_SHARING_HEADER" = "Compartilhamento";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_HELP" = "Oculta o botão de criar grupo na folha de enviar e compartilhar do Instagram.";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_TITLE" = "Ocultar Botão de Criar Grupo";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_HELP" = "Hides usernames you add from Instagram's share sheet, quick send, and recipient lists. Restart after turning this on.";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_TITLE" = "Hide Share Recipients";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_HELP" = "Add or remove usernames that should stay hidden from share and recipient lists.";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_TITLE" = "Manage Hidden Recipients";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_PIN_ACTION" = "Fixar no topo";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_UNPIN_ACTION" = "Desafixar";
 "GENERAL_SHARING_PIN_RECIPIENTS_HELP" = "Toque e segure a foto ou o nome de uma pessoa na folha de compartilhamento para fixá-la no topo da lista, e toque e segure de novo para desafixar. Tocar e segurar um grupo continua mostrando os membros, com um botão abaixo deles para fixar ou desafixar o grupo.";
@@ -1763,6 +1759,8 @@
 "MESSAGES_HIDDEN_CHATS_CONFIRM_UNHIDE_TITLE" = "Reexibir esta conversa?";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_HELP" = "Mensagens não lidas em conversas ocultas não contam no selo de mensagens.";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_TITLE" = "Excluir do selo";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_HELP" = "Keeps people from hidden chats out of Explore search. Turn this off to show them there again.";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_TITLE" = "Hide In Explore Search";
 "MESSAGES_HIDDEN_CHATS_HEADER" = "Conversas ocultas";
 "MESSAGES_HIDDEN_CHATS_HELP" = "Remove da lista da caixa de entrada as conversas que você oculta. Mantenha uma conversa pressionada para ocultá-la e mantenha o título da caixa de entrada pressionado para trazer as ocultas de volta.";
 "MESSAGES_HIDDEN_CHATS_HIDDEN_FORMAT" = "%@ ocultada";

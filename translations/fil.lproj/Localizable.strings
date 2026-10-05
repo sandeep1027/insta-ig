@@ -980,10 +980,6 @@
 "GENERAL_SHARING_HEADER" = "Pagbabahagi";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_HELP" = "Itinatago ang create group button sa send at share sheet ng Instagram.";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_TITLE" = "Itago ang Create Group Button";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_HELP" = "Hides usernames you add from Instagram's share sheet, quick send, and recipient lists. Restart after turning this on.";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_TITLE" = "Hide Share Recipients";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_HELP" = "Add or remove usernames that should stay hidden from share and recipient lists.";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_TITLE" = "Manage Hidden Recipients";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_PIN_ACTION" = "I-pin sa Itaas";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_UNPIN_ACTION" = "I-unpin";
 "GENERAL_SHARING_PIN_RECIPIENTS_HELP" = "Pindutin nang matagal ang larawan o pangalan ng isang tao sa share sheet para i-pin sila sa itaas ng listahan, at pindutin muli nang matagal para i-unpin. Ang pagpindot nang matagal sa isang grupo ay nagpapakita pa rin ng mga miyembro nito, na may button sa ilalim para i-pin o i-unpin ang grupo.";
@@ -1763,6 +1759,8 @@
 "MESSAGES_HIDDEN_CHATS_CONFIRM_UNHIDE_TITLE" = "I-unhide ang chat na ito?";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_HELP" = "Hindi kasama ang mga unread na mensahe sa nakatagong chat sa messages badge.";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_TITLE" = "Huwag Isama sa Badge";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_HELP" = "Keeps people from hidden chats out of Explore search. Turn this off to show them there again.";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_TITLE" = "Hide In Explore Search";
 "MESSAGES_HIDDEN_CHATS_HEADER" = "Mga Nakatagong Chat";
 "MESSAGES_HIDDEN_CHATS_HELP" = "Inaalis sa listahan ng inbox ang mga chat na itinatago mo. I-long press ang isang chat para itago ito, at i-long press ang title ng inbox para ibalik ang mga nakatago.";
 "MESSAGES_HIDDEN_CHATS_HIDDEN_FORMAT" = "Itinago si %@";

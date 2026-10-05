@@ -172,6 +172,7 @@ static NSDictionary *SPKFeatureDefaults(void) {
         @"msgs_hidden_chats_mute_notifications" : @(YES),
         @"msgs_hidden_chats_exclude_badge" : @(YES),
         @"msgs_hidden_chats_hide_in_share_sheet" : @(YES),
+        @"msgs_hidden_chats_hide_in_explore_search" : @(YES),
         @"msgs_auto_save_filter_mode" : @"all",
         @"msgs_presence_notifications" : @(NO),
         @"msgs_presence_notify_online" : @(YES),

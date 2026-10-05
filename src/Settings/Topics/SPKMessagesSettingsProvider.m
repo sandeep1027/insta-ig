@@ -173,6 +173,14 @@ static NSArray *SPKHiddenChatsSettingsSections(void) {
         return [SPKUtils getBoolPref:@"msgs_hidden_chats"];
     };
 
+    SPKSetting *hiddenChatsExploreSearch = [SPKSetting switchCellWithTitle:SPKL(@"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_TITLE")
+                                                                      icon:SPKSettingsIcon(@"search")
+                                                               defaultsKey:@"msgs_hidden_chats_hide_in_explore_search"];
+    hiddenChatsExploreSearch.helpText = SPKL(@"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_HELP");
+    hiddenChatsExploreSearch.enabledProvider = ^BOOL {
+        return [SPKUtils getBoolPref:@"msgs_hidden_chats"];
+    };
+
     SPKSetting *hiddenChatsList = [SPKSetting navigationCellWithTitle:SPKL(@"MESSAGES_HIDDEN_CHATS_LIST_TITLE")
                                                              subtitle:@""
                                                                  icon:SPKSettingsIcon(@"users")
@@ -210,6 +218,7 @@ static NSArray *SPKHiddenChatsSettingsSections(void) {
             hiddenChatsMuteNotifications,
             hiddenChatsExcludeBadge,
             hiddenChatsShareSheet,
+            hiddenChatsExploreSearch,
         ],
                         SPKL(@"MESSAGES_HIDDEN_CHATS_BEHAVIOR_FOOTER")),
         SPKTopicSection(@"", @[

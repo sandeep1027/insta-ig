@@ -980,10 +980,6 @@
 "GENERAL_SHARING_HEADER" = "Поділення";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_HELP" = "Приховує кнопку створення групи у вікні надсилання та поширення Instagram.";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_TITLE" = "Приховати кнопку створення групи";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_HELP" = "Hides usernames you add from Instagram's share sheet, quick send, and recipient lists. Restart after turning this on.";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_TITLE" = "Hide Share Recipients";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_HELP" = "Add or remove usernames that should stay hidden from share and recipient lists.";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_TITLE" = "Manage Hidden Recipients";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_PIN_ACTION" = "Закріпити вгорі";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_UNPIN_ACTION" = "Відкріпити";
 "GENERAL_SHARING_PIN_RECIPIENTS_HELP" = "Утримуйте фото або ім'я людини в меню «Поділитися», щоб закріпити її вгорі списку, і утримуйте знову, щоб відкріпити. Утримання групи, як і раніше, показує її учасників, а кнопка під ними закріплює або відкріплює групу.";
@@ -1763,6 +1759,8 @@
 "MESSAGES_HIDDEN_CHATS_CONFIRM_UNHIDE_TITLE" = "Показати цей чат?";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_HELP" = "Непрочитані повідомлення у прихованих чатах не враховуються в лічильнику повідомлень.";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_TITLE" = "Виключити з лічильника";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_HELP" = "Keeps people from hidden chats out of Explore search. Turn this off to show them there again.";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_TITLE" = "Hide In Explore Search";
 "MESSAGES_HIDDEN_CHATS_HEADER" = "Приховані чати";
 "MESSAGES_HIDDEN_CHATS_HELP" = "Прибирає приховані вами чати зі списку вхідних. Утримуйте чат, щоб приховати його, і утримуйте заголовок вхідних, щоб повернути приховані.";
 "MESSAGES_HIDDEN_CHATS_HIDDEN_FORMAT" = "%@ приховано";

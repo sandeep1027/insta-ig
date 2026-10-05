@@ -980,10 +980,6 @@
 "GENERAL_SHARING_HEADER" = "Bendrinimas";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_HELP" = "Slėpia grupės kūrimo mygtuką Instagram siuntimo ir bendrinimo lape.";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_TITLE" = "Slėpti grupės kūrimo mygtuką";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_HELP" = "Hides usernames you add from Instagram's share sheet, quick send, and recipient lists. Restart after turning this on.";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_TITLE" = "Hide Share Recipients";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_HELP" = "Add or remove usernames that should stay hidden from share and recipient lists.";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_TITLE" = "Manage Hidden Recipients";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_PIN_ACTION" = "Prisegti viršuje";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_UNPIN_ACTION" = "Atsegti";
 "GENERAL_SHARING_PIN_RECIPIENTS_HELP" = "Bendrinimo lape palaikykite paspaudę asmens nuotrauką arba vardą, kad prisegtumėte jį sąrašo viršuje, ir palaikykite dar kartą, kad atsegtumėte. Palaikius grupę, kaip ir anksčiau rodomi jos nariai, o po jais esantis mygtukas prisega arba atsega grupę.";
@@ -1763,6 +1759,8 @@
 "MESSAGES_HIDDEN_CHATS_CONFIRM_UNHIDE_TITLE" = "Nebeslėpti šio pokalbio?";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_HELP" = "Neperskaityti pranešimai paslėptuose pokalbiuose neįtraukiami į pranešimų ženklelio skaičių.";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_TITLE" = "Neįtraukti į ženklelį";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_HELP" = "Keeps people from hidden chats out of Explore search. Turn this off to show them there again.";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_TITLE" = "Hide In Explore Search";
 "MESSAGES_HIDDEN_CHATS_HEADER" = "Paslėpti pokalbiai";
 "MESSAGES_HIDDEN_CHATS_HELP" = "Pašalina paslėptus pokalbius iš gautųjų sąrašo. Ilgai paspauskite pokalbį, kad jį paslėptumėte, ir ilgai paspauskite gautųjų pavadinimą, kad paslėptus pokalbius sugrąžintumėte.";
 "MESSAGES_HIDDEN_CHATS_HIDDEN_FORMAT" = "Paslėptas %@";

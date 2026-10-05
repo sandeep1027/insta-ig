@@ -980,10 +980,6 @@
 "GENERAL_SHARING_HEADER" = "المشاركة";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_HELP" = "يخفي زر إنشاء مجموعة في ورقة الإرسال والمشاركة في Instagram.";
 "GENERAL_SHARING_HIDE_CREATE_GROUP_BUTTON_TITLE" = "إخفاء زر إنشاء مجموعة";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_HELP" = "Hides usernames you add from Instagram's share sheet, quick send, and recipient lists. Restart after turning this on.";
-"GENERAL_SHARING_HIDE_SHARE_RECIPIENTS_TITLE" = "Hide Share Recipients";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_HELP" = "Add or remove usernames that should stay hidden from share and recipient lists.";
-"GENERAL_SHARING_MANAGE_HIDDEN_RECIPIENTS_TITLE" = "Manage Hidden Recipients";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_PIN_ACTION" = "تثبيت في الأعلى";
 "GENERAL_SHARING_PIN_RECIPIENTS_GROUP_UNPIN_ACTION" = "إلغاء التثبيت";
 "GENERAL_SHARING_PIN_RECIPIENTS_HELP" = "اضغط مطولًا على صورة الشخص أو اسمه في ورقة المشاركة لتثبيته في أعلى القائمة، واضغط مطولًا مرة أخرى لإلغاء التثبيت. الضغط المطول على مجموعة لا يزال يعرض أعضاءها، مع زر أسفلهم لتثبيت المجموعة أو إلغاء تثبيتها.";
@@ -1763,6 +1759,8 @@
 "MESSAGES_HIDDEN_CHATS_CONFIRM_UNHIDE_TITLE" = "إظهار هذه المحادثة؟";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_HELP" = "الرسائل غير المقروءة في المحادثات المخفية لا تُحتسب في شارة الرسائل.";
 "MESSAGES_HIDDEN_CHATS_EXCLUDE_BADGE_TITLE" = "استثناء من الشارة";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_HELP" = "Keeps people from hidden chats out of Explore search. Turn this off to show them there again.";
+"MESSAGES_HIDDEN_CHATS_EXPLORE_SEARCH_TITLE" = "Hide In Explore Search";
 "MESSAGES_HIDDEN_CHATS_HEADER" = "المحادثات المخفية";
 "MESSAGES_HIDDEN_CHATS_HELP" = "يزيل المحادثات التي تخفيها من قائمة صندوق الوارد. اضغط مطولًا على محادثة لإخفائها، واضغط مطولًا على عنوان صندوق الوارد لإعادة المخفية.";
 "MESSAGES_HIDDEN_CHATS_HIDDEN_FORMAT" = "تم إخفاء %@";
