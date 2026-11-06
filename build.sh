@@ -292,11 +292,31 @@ build_safari_extension_handler() {
     # Built and signed outside the bundle: signing it in place would seal the
     # whole extension before its scripts are final.
     local build_dir
+    local -a cc signer
     build_dir="$(mktemp -d "${TMPDIR:-/tmp}/sparkle-safari-handler.XXXXXX")"
-    if xcrun clang -arch arm64 -isysroot "$sdk" -miphoneos-version-min=15.0 \
-        -fobjc-arc -fapplication-extension -Os -e _NSExtensionMain -framework Foundation \
+    if command -v xcrun >/dev/null 2>&1; then
+        cc=(xcrun clang -arch arm64 -isysroot "$sdk" -miphoneos-version-min=15.0)
+    else
+        local theos_clang="$theos_dir/toolchain/linux/iphone/bin/clang"
+        if [ ! -x "$theos_clang" ]; then
+            echo -e "\033[1m\033[0;31mNo clang for the Safari extension (xcrun or ${theos_clang}).\033[0m"
+            rm -rf "$build_dir"
+            return 1
+        fi
+        cc=("$theos_clang" -target arm64-apple-ios15.0 -isysroot "$sdk" -miphoneos-version-min=15.0)
+    fi
+    if command -v codesign >/dev/null 2>&1; then
+        signer=(codesign --force --sign -)
+    elif command -v ldid >/dev/null 2>&1; then
+        signer=(ldid -S)
+    else
+        echo -e '\033[1m\033[0;31mNo codesign or ldid to sign the Safari extension.\033[0m'
+        rm -rf "$build_dir"
+        return 1
+    fi
+    if "${cc[@]}" -fobjc-arc -fapplication-extension -Os -e _NSExtensionMain -framework Foundation \
         -o "$build_dir/$executable" "$source" &&
-        codesign --force --sign - "$build_dir/$executable" >/dev/null 2>&1 &&
+        "${signer[@]}" "$build_dir/$executable" >/dev/null 2>&1 &&
         mv "$build_dir/$executable" "$appex_dir/$executable"; then
         rm -rf "$build_dir"
         return 0
@@ -381,7 +401,12 @@ inject_custom_icons() {
     echo -e '\033[1m\033[32mInjecting Sparkle app icons...\033[0m'
 
     # Icon Composer packages, spliced into Instagram's own Assets.car.
-    "$ROOT_DIR/tools/splice-glass-icons.sh" "$app_dir"
+    # That compiler ships with Xcode 26. A Linux sideload build keeps Instagram's icon.
+    if command -v xcode-select >/dev/null 2>&1 || [ -x "/Applications/Icon Composer.app/Contents/Executables/ictool" ]; then
+        "$ROOT_DIR/tools/splice-glass-icons.sh" "$app_dir"
+    else
+        echo -e '\033[1m\033[0;33mIcon Composer is not available here, so this IPA keeps Instagram'\''s icon.\033[0m'
+    fi
 
     rm -f "$output_ipa"
     (

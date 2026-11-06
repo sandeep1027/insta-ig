@@ -64,6 +64,16 @@ def cmd_add(root: Any, command: str) -> None:
     parts = parse_entry(entry)
     if not parts:
         raise ValueError("Add requires a path")
+    # A trailing colon appends to an array, matching PlistBuddy:
+    # Add :CFBundleURLTypes:0:CFBundleURLSchemes: string sparkle-ig
+    if parts[-1] == "":
+        parent = root
+        for part in parts[:-1]:
+            parent = parent[part]
+        if not isinstance(parent, list):
+            raise KeyError(entry)
+        parent.append(value)
+        return
     parent, key = resolve_parent(root, parts)
     if isinstance(key, int):
         if not isinstance(parent, list) or key < 0 or key > len(parent):
@@ -148,7 +158,8 @@ def main() -> int:
             run_command(root, command)
         if any(cmd.strip().split(" ", 1)[0].lower() != "print" for cmd in args.commands):
             save_plist(args.plist, root)
-    except Exception:
+    except Exception as exc:
+        print(f"plistbuddy: {exc}", file=sys.stderr)
         return 1
     return 0
 

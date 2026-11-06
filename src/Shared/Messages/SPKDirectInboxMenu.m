@@ -44,6 +44,41 @@ static id SPKDirectInboxMenuKVCObject(id target, NSString *key) {
     }
 }
 
+/// `actionProvider` is not a public property. KVC sometimes finds the block and
+/// sometimes does not, depending on which configuration Instagram handed back.
+static BOOL SPKDirectInboxMenuObjectIsBlock(id object) {
+    static Class blockClass;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        id sample = ^{
+        };
+        blockClass = [sample class];
+        while (blockClass && class_getSuperclass(blockClass) != [NSObject class])
+            blockClass = class_getSuperclass(blockClass);
+    });
+    return blockClass != Nil && [object isKindOfClass:blockClass];
+}
+
+static UIContextMenuActionProvider SPKDirectInboxMenuActionProvider(UIContextMenuConfiguration *configuration) {
+    id provider = SPKDirectInboxMenuKVCObject(configuration, @"actionProvider");
+    if (!SPKDirectInboxMenuObjectIsBlock(provider))
+        provider = SPKDirectInboxMenuKVCObject(configuration, @"_actionProvider");
+    if (!SPKDirectInboxMenuObjectIsBlock(provider))
+        return nil;
+    // Copy before the configuration's stack frame goes away. A stack block read
+    // through KVC becomes a dangling pointer by the time UIKit asks for the menu.
+    return [provider copy];
+}
+
+static UIContextMenuContentPreviewProvider SPKDirectInboxMenuPreviewProvider(UIContextMenuConfiguration *configuration) {
+    id provider = SPKDirectInboxMenuKVCObject(configuration, @"previewProvider");
+    if (!SPKDirectInboxMenuObjectIsBlock(provider))
+        provider = SPKDirectInboxMenuKVCObject(configuration, @"_previewProvider");
+    if (!SPKDirectInboxMenuObjectIsBlock(provider))
+        return nil;
+    return [provider copy];
+}
+
 void SPKDirectInboxMenuRegisterProvider(NSString *identifier, NSInteger order, SPKDirectInboxMenuProvider provider) {
     if (identifier.length == 0 || !provider)
         return;
@@ -150,8 +185,19 @@ static id SPKDirectInboxMenuWrapConfigurationForViewModel(id viewModel, id confi
     }
 
     UIContextMenuConfiguration *original = (UIContextMenuConfiguration *)configuration;
-    UIContextMenuActionProvider originalProvider = SPKDirectInboxMenuKVCObject(original, @"actionProvider");
-    UIContextMenuContentPreviewProvider originalPreview = SPKDirectInboxMenuKVCObject(original, @"previewProvider");
+    UIContextMenuActionProvider originalProvider = SPKDirectInboxMenuActionProvider(original);
+    // A replacement with no Instagram action block has no Delete / Mute / Unread
+    // rows. UIKit treats that empty menu as a cancelled long-press. Keep the
+    // original configuration so the submenu still opens.
+    if (!originalProvider) {
+        SPKLog(@"Messages", @"[Sparkle InboxMenu] Kept Instagram menu: action provider unreadable threadId=%@ configuration=%@<%p>",
+               context.threadId ?: @"(unknown)",
+               NSStringFromClass([original class]),
+               original);
+        return configuration;
+    }
+
+    UIContextMenuContentPreviewProvider originalPreview = SPKDirectInboxMenuPreviewProvider(original);
     id<NSCopying> originalIdentifier = SPKDirectInboxMenuKVCObject(original, @"identifier");
     NSArray<SPKDirectInboxMenuEntry *> *entries = [SPKDirectInboxMenuEntries copy];
     NSArray<SPKDirectInboxMenuTransformerEntry *> *transformerEntries = [SPKDirectInboxMenuTransformerEntries copy];
@@ -159,7 +205,7 @@ static id SPKDirectInboxMenuWrapConfigurationForViewModel(id viewModel, id confi
     UIContextMenuActionProvider wrappedProvider = ^UIMenu *(NSArray<UIMenuElement *> *suggestedActions) {
         UIMenu *baseMenu = nil;
         @try {
-            baseMenu = originalProvider ? originalProvider(suggestedActions) : [UIMenu menuWithChildren:suggestedActions ?: @[]];
+            baseMenu = originalProvider(suggestedActions);
         } @catch (NSException *exception) {
             SPKLog(@"Messages", @"[Sparkle InboxMenu] Original provider failed threadId=%@ exception=%@ reason=%@",
                    context.threadId ?: @"(unknown)",
