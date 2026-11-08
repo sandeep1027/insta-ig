@@ -70,13 +70,50 @@ static UIContextMenuActionProvider SPKDirectInboxMenuActionProvider(UIContextMen
     return [provider copy];
 }
 
-static UIContextMenuContentPreviewProvider SPKDirectInboxMenuPreviewProvider(UIContextMenuConfiguration *configuration) {
-    id provider = SPKDirectInboxMenuKVCObject(configuration, @"previewProvider");
-    if (!SPKDirectInboxMenuObjectIsBlock(provider))
-        provider = SPKDirectInboxMenuKVCObject(configuration, @"_previewProvider");
-    if (!SPKDirectInboxMenuObjectIsBlock(provider))
-        return nil;
-    return [provider copy];
+static const void *kSPKDirectInboxMenuProviderKey = &kSPKDirectInboxMenuProviderKey;
+
+// Sparkle never replaces the configuration object. Rebuilding one with
+// configurationWithIdentifier:previewProvider:actionProvider: drops the private
+// preview/menu state Instagram builds for its context menus, and the long press
+// then fails to open on some chats. The original object is kept and only its
+// action provider is swapped, through both the public getter and the backing
+// ivar (UIKit's private menu machinery does not always go through the getter).
+static UIContextMenuActionProvider (*SPKDirectOrigActionProviderGetter)(id, SEL);
+
+static UIContextMenuActionProvider SPKDirectInboxMenuProviderGetter(id self, SEL _cmd) {
+    UIContextMenuActionProvider wrapped = objc_getAssociatedObject(self, kSPKDirectInboxMenuProviderKey);
+    if (wrapped)
+        return wrapped;
+    return SPKDirectOrigActionProviderGetter ? SPKDirectOrigActionProviderGetter(self, _cmd) : nil;
+}
+
+static void SPKDirectInboxMenuInstallProviderGetterHook(void) {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        SEL selector = @selector(actionProvider);
+        if (!class_getInstanceMethod([UIContextMenuConfiguration class], selector))
+            return;
+        MSHookMessageEx([UIContextMenuConfiguration class],
+                        selector,
+                        (IMP)SPKDirectInboxMenuProviderGetter,
+                        (IMP *)&SPKDirectOrigActionProviderGetter);
+    });
+}
+
+static void SPKDirectInboxMenuAttachProvider(UIContextMenuConfiguration *configuration,
+                                             UIContextMenuActionProvider provider) {
+    if (!configuration || !provider)
+        return;
+    objc_setAssociatedObject(configuration, kSPKDirectInboxMenuProviderKey, provider,
+                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    // object_setIvar retains the new block and releases the replaced one, so the
+    // configuration's own ownership stays balanced while the association keeps
+    // the getter path alive too.
+    Ivar ivar = class_getInstanceVariable(object_getClass(configuration), "_actionProvider");
+    if (!ivar)
+        ivar = class_getInstanceVariable([UIContextMenuConfiguration class], "_actionProvider");
+    if (ivar)
+        object_setIvar(configuration, ivar, provider);
 }
 
 void SPKDirectInboxMenuRegisterProvider(NSString *identifier, NSInteger order, SPKDirectInboxMenuProvider provider) {
@@ -150,7 +187,19 @@ static id SPKDirectInboxMenuViewModelForIndexPath(id controller, id indexPath) {
     }
 
     NSInteger section = [(NSIndexPath *)indexPath section];
-    id sectionController = ((id (*)(id, SEL, NSInteger))objc_msgSend)(adapter, sectionControllerSelector, section);
+    id sectionController = nil;
+    @try {
+        sectionController = ((id (*)(id, SEL, NSInteger))objc_msgSend)(adapter, sectionControllerSelector, section);
+    } @catch (NSException *exception) {
+        // ListKit raises for an index path that no longer matches the adapter
+        // (a diff landing under a long press). Letting that escape the delegate
+        // callback cancels the interaction, so the popup never appears.
+        SPKLog(@"Messages", @"[Sparkle InboxMenu] Skipped: sectionControllerForSection: threw section=%ld adapter=%@ exception=%@",
+               (long)section,
+               NSStringFromClass([adapter class]),
+               exception.name);
+        return nil;
+    }
     id viewModel = SPKDirectInboxMenuKVCObject(sectionController, @"viewModel");
     if (!viewModel)
         viewModel = [SPKUtils getIvarForObj:sectionController name:"_viewModel"];
@@ -185,6 +234,10 @@ static id SPKDirectInboxMenuWrapConfigurationForViewModel(id viewModel, id confi
     }
 
     UIContextMenuConfiguration *original = (UIContextMenuConfiguration *)configuration;
+    // The same configuration can be handed back more than once; never wrap a
+    // wrapped provider, or each call would nest another layer.
+    if (objc_getAssociatedObject(original, kSPKDirectInboxMenuProviderKey))
+        return configuration;
     UIContextMenuActionProvider originalProvider = SPKDirectInboxMenuActionProvider(original);
     // A replacement with no Instagram action block has no Delete / Mute / Unread
     // rows. UIKit treats that empty menu as a cancelled long-press. Keep the
@@ -197,8 +250,6 @@ static id SPKDirectInboxMenuWrapConfigurationForViewModel(id viewModel, id confi
         return configuration;
     }
 
-    UIContextMenuContentPreviewProvider originalPreview = SPKDirectInboxMenuPreviewProvider(original);
-    id<NSCopying> originalIdentifier = SPKDirectInboxMenuKVCObject(original, @"identifier");
     NSArray<SPKDirectInboxMenuEntry *> *entries = [SPKDirectInboxMenuEntries copy];
     NSArray<SPKDirectInboxMenuTransformerEntry *> *transformerEntries = [SPKDirectInboxMenuTransformerEntries copy];
 
@@ -211,15 +262,20 @@ static id SPKDirectInboxMenuWrapConfigurationForViewModel(id viewModel, id confi
                    context.threadId ?: @"(unknown)",
                    exception.name,
                    exception.reason);
-            return [UIMenu menuWithChildren:suggestedActions ?: @[]];
+            baseMenu = nil;
         }
         if (![baseMenu isKindOfClass:[UIMenu class]]) {
-            SPKLog(@"Messages", @"[Sparkle InboxMenu] Original provider returned invalid menu threadId=%@ menu=%@",
+            // An empty menu is not a harmless menu: UIKit reads it as a cancelled
+            // long press and the popup never appears. Only substitute the
+            // system-suggested rows when there actually are some.
+            SPKLog(@"Messages", @"[Sparkle InboxMenu] Original provider returned invalid menu threadId=%@ menu=%@ suggested=%lu",
                    context.threadId ?: @"(unknown)",
-                   baseMenu);
-            return [UIMenu menuWithChildren:suggestedActions ?: @[]];
+                   baseMenu,
+                   (unsigned long)suggestedActions.count);
+            return suggestedActions.count > 0 ? [UIMenu menuWithChildren:suggestedActions] : nil;
         }
 
+        UIMenu *lastNonEmptyMenu = baseMenu;
         for (SPKDirectInboxMenuTransformerEntry *entry in transformerEntries) {
             UIMenu *transformedMenu = nil;
             @try {
@@ -231,8 +287,11 @@ static id SPKDirectInboxMenuWrapConfigurationForViewModel(id viewModel, id confi
                        exception.reason);
                 continue;
             }
-            if ([transformedMenu isKindOfClass:[UIMenu class]])
-                baseMenu = transformedMenu;
+            if (![transformedMenu isKindOfClass:[UIMenu class]])
+                continue;
+            baseMenu = transformedMenu;
+            if (baseMenu.children.count > 0)
+                lastNonEmptyMenu = baseMenu;
         }
 
         NSMutableArray<UIMenuElement *> *sparkleElements = [NSMutableArray array];
@@ -252,8 +311,26 @@ static id SPKDirectInboxMenuWrapConfigurationForViewModel(id viewModel, id confi
                     [sparkleElements addObject:element];
             }
         }
-        if (sparkleElements.count == 0)
-            return baseMenu;
+        if (sparkleElements.count == 0) {
+            if (baseMenu.children.count > 0)
+                return baseMenu;
+            // A transformer can remove every row — the Message Preview upsell is
+            // the whole menu on some threads. Returning that empty menu would
+            // cancel the long press, so put back the menu it was handed.
+            if (lastNonEmptyMenu && lastNonEmptyMenu != baseMenu) {
+                SPKLog(@"Messages", @"[Sparkle InboxMenu] Restored menu emptied by a transformer threadId=%@ children=%lu",
+                       context.threadId ?: @"(unknown)",
+                       (unsigned long)lastNonEmptyMenu.children.count);
+                return lastNonEmptyMenu;
+            }
+            // Nothing to show and nothing to add: returning this empty menu
+            // would cancel the long press. Say so, so a bug report can name
+            // the culprit instead of "the menu does not open".
+            SPKLog(@"Messages", @"[Sparkle InboxMenu] Suppressed empty menu threadId=%@ transformers=%lu",
+                   context.threadId ?: @"(unknown)",
+                   (unsigned long)transformerEntries.count);
+            return nil;
+        }
 
         // An inline menu renders as its own divided section rather than a nested
         // row, and putting it first in `children` keeps Sparkle's rows above
@@ -265,12 +342,17 @@ static id SPKDirectInboxMenuWrapConfigurationForViewModel(id viewModel, id confi
                                               children:sparkleElements];
         NSMutableArray<UIMenuElement *> *children = [NSMutableArray arrayWithObject:sparkleSection];
         [children addObjectsFromArray:baseMenu.children ?: @[]];
+        SPKLog(@"Messages", @"[Sparkle InboxMenu] Built menu threadId=%@ base=%lu sparkle=%lu",
+               context.threadId ?: @"(unknown)",
+               (unsigned long)baseMenu.children.count,
+               (unsigned long)sparkleElements.count);
         return [baseMenu menuByReplacingChildren:children];
     };
 
-    return [UIContextMenuConfiguration configurationWithIdentifier:originalIdentifier
-                                                  previewProvider:originalPreview
-                                                   actionProvider:wrappedProvider];
+    SPKDirectInboxMenuAttachProvider(original, wrappedProvider);
+    // Hand Instagram's own configuration back untouched: only the provider was
+    // swapped, so the preview and the private menu state around it stay intact.
+    return configuration;
 }
 
 // Newer builds hand the delegate an index path and expect the callee to find the
@@ -284,15 +366,45 @@ static id SPKDirectInboxMenuWrapConfiguration(id controller, id indexPath, id co
 }
 
 static id SPKDirectInboxContextMenu(id self, SEL _cmd, id indexPath) {
-    return SPKDirectInboxMenuWrapConfiguration(self, indexPath, SPKDirectOrigInboxContextMenu(self, _cmd, indexPath));
+    id configuration = nil;
+    @try {
+        configuration = SPKDirectOrigInboxContextMenu(self, _cmd, indexPath);
+        return SPKDirectInboxMenuWrapConfiguration(self, indexPath, configuration);
+    } @catch (NSException *exception) {
+        // An exception escaping a context-menu delegate callback cancels the
+        // interaction outright, which looks exactly like the menu never opening.
+        // Fall back to Instagram's own configuration, untouched.
+        SPKLog(@"Messages", @"[Sparkle InboxMenu] Kept Instagram menu after exception=%@ reason=%@",
+               exception.name,
+               exception.reason);
+        return configuration;
+    }
 }
 
 static id SPKDirectInboxSwiftContextMenu(id self, SEL _cmd, id indexPath) {
-    return SPKDirectInboxMenuWrapConfiguration(self, indexPath, SPKDirectOrigInboxSwiftContextMenu(self, _cmd, indexPath));
+    id configuration = nil;
+    @try {
+        configuration = SPKDirectOrigInboxSwiftContextMenu(self, _cmd, indexPath);
+        return SPKDirectInboxMenuWrapConfiguration(self, indexPath, configuration);
+    } @catch (NSException *exception) {
+        SPKLog(@"Messages", @"[Sparkle InboxMenu] Kept Instagram menu after exception=%@ reason=%@",
+               exception.name,
+               exception.reason);
+        return configuration;
+    }
 }
 
 static id SPKDirectInboxLegacyContextMenu(id self, SEL _cmd, id viewModel) {
-    return SPKDirectInboxMenuWrapConfigurationForViewModel(viewModel, SPKDirectOrigInboxLegacyContextMenu(self, _cmd, viewModel));
+    id configuration = nil;
+    @try {
+        configuration = SPKDirectOrigInboxLegacyContextMenu(self, _cmd, viewModel);
+        return SPKDirectInboxMenuWrapConfigurationForViewModel(viewModel, configuration);
+    } @catch (NSException *exception) {
+        SPKLog(@"Messages", @"[Sparkle InboxMenu] Kept Instagram menu after exception=%@ reason=%@",
+               exception.name,
+               exception.reason);
+        return configuration;
+    }
 }
 
 static BOOL SPKDirectInboxMenuHookClass(Class inboxClass, SEL selector, IMP replacement, IMP *orig) {
@@ -307,6 +419,7 @@ static BOOL SPKDirectInboxMenuHookClass(Class inboxClass, SEL selector, IMP repl
 void SPKDirectInboxMenuInstallHooksIfNeeded(void) {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
+        SPKDirectInboxMenuInstallProviderGetterHook();
         SEL selector = NSSelectorFromString(@"networkingCoordinator_contextMenuConfigurationForThreadCellAtIndexPath:");
         BOOL installed = SPKDirectInboxMenuHookClass(SPKDirectObjCInboxClass(),
                                                      selector,
